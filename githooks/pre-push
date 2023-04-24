@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# To use this githook copy this file to .git/hooks (in repo root dir)
+# The file permissions may need changing using ``chmod +x .git/hooks/pre-push``
+
+
+echo Running flake8 linter tests...
+TEST_RESULTS=$(flake8 .)
+RETURN_VALUE=$?
+if [ $RETURN_VALUE != 0 ]; then
+  echo "$TEST_RESULTS"
+  exit 1
+fi
+echo PASSED
+exit 0

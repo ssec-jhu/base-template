@@ -12,6 +12,7 @@ Things to do when using this template:
  * Correct "description" field in .zenodo.json to reflect description of child repo.
  * Correct the ``CI Status`` badge with child repo name.
  * Correct meta data in ``CITATION.cff``.
+ * Import package into https://readthedocs.org/.
 
 What's included in this template:
 

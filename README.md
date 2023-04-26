@@ -11,6 +11,7 @@ Things to do when using this template:
  * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
  * Correct "description" field in .zenodo.json to reflect description of child repo.
  * Correct the ``CI Status`` badge with child repo name.
+ * Correct meta data in ``CITATION.cff``.
 
 What's included in this template:
 

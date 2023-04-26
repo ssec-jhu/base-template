@@ -1,8 +1,16 @@
+# SSEC-JHU <package_name>
+
 [//]: # ([![DOI]&#40;https://zenodo.org/badge/<insert_ID_number>.svg&#41;]&#40;https://zenodo.org/badge/latestdoi/<insert_ID_number>&#41;)
+[![CI Status](https://github.com/ssec-jhu/base-template/workflows/CI/badge.svg?branch=main)](https://github.com/ssec-jhu/base-template/actions)
 
-
-# SSEC-JHU base-template
 Base repo template to be used by all others.
+
+Things to do when using this template:
+
+ * Correct ```<package_name>``` for child repo - suggest doing a search-all (grep) "package_name".
+ * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
+ * Correct "description" field in .zenodo.json to reflect description of child repo.
+ * Correct the ``CI Status`` badge with child repo name.
 
 What's included in this template:
 

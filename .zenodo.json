@@ -1,0 +1,33 @@
+{
+    "creators": [
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "James Noss",
+            "orcid": "0000-0002-0922-5770"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Edward Hunter",
+            "orcid": "0000-0002-6876-001X"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Vladimir Kluzner",
+            "orcid": "0009-0000-5844-661X"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Gerard Lemson",
+            "orcid": "0000-0001-5041-2458"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Arik Mitschang",
+            "orcid": "0000-0001-9239-012X"
+        }
+    ],
+    "description": "Accelerating Software Development for Science Research",
+    "license": "other-open",
+    "upload_type": "software",
+    "access_right": "open"
+}

@@ -1,5 +1,5 @@
 Welcome to <package_name>'s documentation!
-===================================
+==========================================
 
 **<package_name>** is a Python library for...
 

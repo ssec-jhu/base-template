@@ -30,6 +30,10 @@ templates_path = ['_templates']
 # -- Options for HTML output
 
 html_theme = 'sphinx_rtd_theme'
+html_static_path = ['../_static']
+html_css_files = ['../_static/custom.css']
+html_logo = '../_static/SSEC_logo_vert_white_lg_1184x661.png'
+
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'

@@ -1,7 +1,11 @@
 # SSEC-JHU <package_name>
 
-[//]: # ([![DOI]&#40;https://zenodo.org/badge/<insert_ID_number>.svg&#41;]&#40;https://zenodo.org/badge/latestdoi/<insert_ID_number>&#41;)
 [![CI Status](https://github.com/ssec-jhu/base-template/workflows/CI/badge.svg?branch=main)](https://github.com/ssec-jhu/base-template/actions)
+[![Documentation Status](https://readthedocs.org/projects/base-template/badge/?version=latest)](http://ssec-jhu-base-template.readthedocs.io/en/latest/?badge=latest)
+<!---[![DOI](https://zenodo.org/badge/<insert_ID_number>.svg)](https://zenodo.org/badge/latestdoi/<insert_ID_number>) --->
+
+
+![SSEC-JHU Logo](docs/_static/SSEC_logo_horiz_blue_1152x263.png)
 
 Base repo template to be used by all others.
 

@@ -2,6 +2,7 @@
 
 [![CI Status](https://github.com/ssec-jhu/base-template/workflows/CI/badge.svg?branch=main)](https://github.com/ssec-jhu/base-template/actions)
 [![Documentation Status](https://readthedocs.org/projects/base-template/badge/?version=latest)](http://ssec-jhu-base-template.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/ssec-jhu/base-template/branch/main/graph/badge.svg?token=0KPNKHRC2V)](https://codecov.io/gh/ssec-jhu/base-template)
 <!---[![DOI](https://zenodo.org/badge/<insert_ID_number>.svg)](https://zenodo.org/badge/latestdoi/<insert_ID_number>) --->
 
 
@@ -15,6 +16,7 @@ Things to do when using this template:
  * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
  * Correct "description" field in .zenodo.json to reflect description of child repo.
  * Correct the ``CI Status`` badge with child repo name.
+ * Correct CodeCov status badge.
  * Correct meta data in ``CITATION.cff``.
  * Import package into https://readthedocs.org/.
 

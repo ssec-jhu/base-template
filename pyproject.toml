@@ -1,0 +1,45 @@
+[project]
+name = "package_name"  # Replace package_name with actual name (it's just a template).
+dynamic = ["version"]
+authors = [
+    {name = "Scientifc Software Engineering Center at JHU", email = "ssec@jhu.edu"},
+]
+description = ""
+readme = "README.md"
+license = {file = "LICENSE"}
+
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[all]",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "flake8",
+]
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme",
+    "sphinx-automodapi",
+    "sphinx-issues",
+    "nbsphinx"
+]
+
+[project.urls]
+homepage = "https://github.com/ssec-jhu/base-template"
+documentation = "https://github.com/ssec-jhu/base-template"
+repository = "https://github.com/ssec-jhu/base-template"
+
+[build-system]
+requires = ["setuptools>=61.2", "setuptools_scm[toml]>=7"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["package_name"]  # Replace package_name with actual name (it's just a template).
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools_scm]
+write_to = "package_name/_version.py"  # Replace package_name with actual name (it's just a template).

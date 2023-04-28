@@ -1,8 +1,18 @@
-import pytest
+from package_name.util import find_package_location, find_repo_location
+from package_name import __project__, __version__
 
 
-@pytest.mark.parametrize("value,key", ((1, 1), (2, 2), (3, 3)))
-def test_base_dummy(value, key):
-    # This test belongs to https://github.com/ssec-jhu/base-template and doesn't actually test anything.
-    # Feel free to delete.
-    assert value == key
+def test_version():
+    assert __version__
+
+
+def test_project():
+    assert __project__
+
+
+def test_find_package_location():
+    assert find_package_location()
+
+
+def test_find_repo_location():
+    assert find_repo_location()

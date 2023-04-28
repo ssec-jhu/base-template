@@ -77,6 +77,7 @@ To be completed by child repo.
 
 
 # Testing
+_NOTE: The following steps require ``pip install -r requirements/dev.txt``._
 
 ### Linting:
 Facilitates in testing typos, syntax, style, and other simple code analysis tests.
@@ -86,6 +87,11 @@ Facilitates in testing typos, syntax, style, and other simple code analysis test
   * This can be automatically run (recommended for devs) every time you ``git push`` by installing the provided
     ``pre-push`` git hook available in ``./githooks``.
     Instructions are in that file - just ``cp ./githooks/pre-push .git/hooks/;chmod +x .git/hooks/pre-push``.
+
+### Security Checks:
+Facilitates in checking for security concerns using [Bandit](https://bandit.readthedocs.io/en/latest/index.html).
+ * ``cd`` into repo dir.
+ * ``bandit --severity-level=medium -r package_name``
 
 ### Unit Tests:
 Facilitates in testing core package functionality at a modular level.
@@ -104,6 +110,7 @@ Facilitates in testing at the application and infrastructure level.
 ### Build Docs:
 Facilitates in building, testing & viewing the docs.
  * ``cd`` into repo dir.
+ * ``pip install -r requirements/docs.txt``
  * ``cd docs``
  * ``make clean``
  * ``make html``

@@ -36,6 +36,27 @@ jobs:
         run: ruff .
         shell: bash
 
+  security:
+    name: Check security concerns with bandit on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.11]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install bandit>=1.7
+        shell: bash
+      - name: Run bandit
+        run: bandit --severity-level=medium -r package_name
+        shell: bash
+
   test:
     name: pytests on Python ${{ matrix.python-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

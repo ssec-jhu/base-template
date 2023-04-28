@@ -15,9 +15,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "bandit>=1.7",
+    "build",
     "pytest",
     "pytest-cov",
     "flake8",
+    "tox"
 ]
 docs = [
     "sphinx",

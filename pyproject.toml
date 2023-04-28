@@ -19,7 +19,12 @@ dev = [
     "pytest-cov",
     "flake8",
 ]
-doc = [
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme",
+    "sphinx-automodapi",
+    "sphinx-issues",
+    "nbsphinx"
 ]
 
 [project.urls]

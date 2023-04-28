@@ -100,3 +100,11 @@ Facilitates in testing whether core data results differ during development.
 ### Smoke Tests:
 Facilitates in testing at the application and infrastructure level.
   * WIP
+
+### Build Docs:
+Facilitates in building, testing & viewing the docs.
+ * ``cd`` into repo dir.
+ * ``cd docs``
+ * ``make clean``
+ * ``make html``
+ * To view the docs in your default browser run ``open docs/_build/html/index.html``.

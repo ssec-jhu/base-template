@@ -43,3 +43,34 @@ include-package-data = true
 
 [tool.setuptools_scm]
 write_to = "package_name/_version.py"  # Replace package_name with actual name (it's just a template).
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "docs",
+    "node_modules",
+    "venv",
+]
+
+ignore = [
+]
+
+target-version = "py311"

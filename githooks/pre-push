@@ -4,8 +4,8 @@
 # The file permissions may need changing using ``chmod +x .git/hooks/pre-push``
 
 
-echo Running flake8 linter tests...
-TEST_RESULTS=$(flake8 .)
+echo Running ruff linter tests...
+TEST_RESULTS=$(ruff .)
 RETURN_VALUE=$?
 if [ $RETURN_VALUE != 0 ]; then
   echo "$TEST_RESULTS"

@@ -1,7 +1,7 @@
 -r dev.txt
 
 sphinx==7.0.1
-sphinx_rtd_theme==1.2.0
+sphinx_rtd_theme==1.2.1
 sphinx-automodapi==0.15.0
 sphinx-issues==3.0.1
 nbsphinx==0.9.1

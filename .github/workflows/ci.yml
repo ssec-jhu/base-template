@@ -62,7 +62,14 @@ jobs:
       run: pip install .
     - name: Test with pytest
       run: |
-        pytest --cov=./ --cov-report=xml:coverage.xml
+        pytest --cov=./ --cov-report=xml:coverage.xml --cov-report=html:coverage.html
+    - name: Archive coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-report-python${{ matrix.python-version }}-${{ matrix.os }}
+        path: coverage.html
+        retention-days: 14
+        if-no-files-found: error
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:

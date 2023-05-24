@@ -84,7 +84,7 @@ _NOTE: The following steps require ``pip install -r requirements/dev.txt``._
 Facilitates in testing typos, syntax, style, and other simple code analysis tests.
   * ``cd`` into repo dir.
   * Switch/activate correct environment: ``conda activate <environment_name>``
-  * Run ``flake8 .``
+  * Run ``ruff .``
   * This can be automatically run (recommended for devs) every time you ``git push`` by installing the provided
     ``pre-push`` git hook available in ``./githooks``.
     Instructions are in that file - just ``cp ./githooks/pre-push .git/hooks/;chmod +x .git/hooks/pre-push``.

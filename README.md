@@ -108,7 +108,7 @@ Facilitates in testing whether core data results differ during development.
 Facilitates in testing at the application and infrastructure level.
   * WIP
 
-### Build Docs:
+### Build Docs
 Facilitates in building, testing & viewing the docs.
  * ``cd`` into repo dir.
  * ``pip install -r requirements/docs.txt``

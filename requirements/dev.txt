@@ -5,5 +5,5 @@ build==0.10.0
 httpx==0.24.1
 pytest==7.3.1
 pytest-cov==4.0.0
-ruff==0.0.269
+ruff==0.0.270
 tox==4.5.1

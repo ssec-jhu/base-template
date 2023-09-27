@@ -100,6 +100,8 @@ jobs:
           pip3 install -r requirements/docs.txt
         shell: bash
       - name: Build sphinx docs.
+        env:
+          SPHINXOPTS: '-W'
         run: |
           cd docs
           make clean

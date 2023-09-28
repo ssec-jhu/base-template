@@ -20,6 +20,8 @@ dev = [
     "pytest",
     "pytest-cov",
     "ruff",
+    "setuptools>=61.2",
+    "setuptools_scm[toml]>=8.0",
     "tox"
 ]
 docs = [

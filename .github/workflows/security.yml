@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install bandit>=1.7
+          pip3 install bandit>=1.7 tox
         shell: bash
-      - name: Run bandit
-        run: bandit --severity-level=medium -r package_name
+      - name: Run bandit (via tox)
+        run: tox -e check-security
         shell: bash

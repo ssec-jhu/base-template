@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from package_name.util import find_package_location, find_repo_location
 from package_name import __project__, __version__
 
@@ -13,13 +11,14 @@ def test_find_repo_location():
 def test_find_package_location():
     pkg_path = find_package_location()
     assert pkg_path
-    pkg_path = Path(pkg_path)
+    assert pkg_path.exists()
     assert pkg_path.is_dir()
     assert pkg_path.name == __project__
 
 
 def test_version_file():
-    pkg_path = Path(find_package_location())
+    pkg_path = find_package_location()
+    assert pkg_path.exists()
     version_file = pkg_path / "_version.py"
     assert version_file.exists()
 

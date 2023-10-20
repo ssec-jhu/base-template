@@ -1,6 +1,6 @@
 # SSEC-JHU <package_name>
 
-[![CI Status](https://github.com/ssec-jhu/base-template/workflows/CI/badge.svg?branch=main)](https://github.com/ssec-jhu/base-template/actions)
+[![CI](https://github.com/ssec-jhu/base-template/actions/workflows/ci.yml/badge.svg)](https://github.com/ssec-jhu/base-template/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/ssec-jhu-base-template/badge/?version=latest)](https://ssec-jhu-base-template.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/ssec-jhu/base-template/branch/main/graph/badge.svg?token=0KPNKHRC2V)](https://codecov.io/gh/ssec-jhu/base-template)
 [![Security Status](https://github.com/ssec-jhu/base-template/workflows/Security/badge.svg?branch=main)](https://github.com/ssec-jhu/base-template/actions)

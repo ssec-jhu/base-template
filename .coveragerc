@@ -3,3 +3,4 @@ omit =
     **/_*.py
     setup.py
     */tests/*
+    _version.py

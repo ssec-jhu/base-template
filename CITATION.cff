@@ -16,6 +16,9 @@ authors:
 - family-names: "Mitschang"
   given-names: "Arik"
   orcid: "https://orcid.org/0000-0001-9239-012X"
+- family-names: "Chen"
+  given-names: "Xiang"
+  orcid: "https://orcid.org/0009-0003-6402-9822"
 title: "<package_name>"
 version: 0.0.1
 doi: <insert zenodo DOI>

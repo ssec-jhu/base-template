@@ -19,6 +19,9 @@ authors:
 - family-names: "Chen"
   given-names: "Xiang"
   orcid: "https://orcid.org/0009-0003-6402-9822"
+- family-names: "Abbasinejad"
+  given-names: "Fatemeh"
+  orcid: "https://orcid.org/0009-0006-3239-7112"
 title: "<package_name>"
 version: 0.0.1
 doi: <insert zenodo DOI>

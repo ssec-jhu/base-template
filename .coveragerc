@@ -4,3 +4,6 @@ omit =
     setup.py
     */tests/*
     _version.py
+[report]
+exclude_lines =
+    @abstractmethod

@@ -19,6 +19,7 @@ Things to do when using this template:
  * Correct the ``CI Status`` badge with child repo name.
  * Correct CodeCov status badge.
  * Correct meta data in ``CITATION.cff``.
+ * Correct ``homepage``, ``documentation``, and ``repository`` under ``[project.urls]`` in pyproject.toml
  * Import package into https://readthedocs.org/.
 
 What's included in this template:

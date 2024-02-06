@@ -44,7 +44,9 @@ For additional cmds see the [Conda cheat-sheet](https://docs.conda.io/projects/c
  * Activate/switch to new env ``conda activate <environment_name>``
  * ``cd`` into repo dir.
  * Install ``python`` and ``pip`` ``conda install python=3.11 pip``
- * Install all required dependencies (assuming local dev work) ``pip install -r requirements/dev.txt``.
+ * Install all required dependencies (assuming local dev work), there are two ways to do this
+   * If working with tox (recommended) ``pip install -r requirements/dev.txt``.
+   * If you would like to setup an environment with all requirements to run outside of tox ``pip install -r requirements/all.txt``.
 
 ### Build:
 
@@ -80,6 +82,19 @@ To be completed by child repo.
 
 # Testing
 _NOTE: The following steps require ``pip install -r requirements/dev.txt``._
+
+## Using tox
+
+* Run tox ``tox``. This will run all of linting, security, test, docs and package building within tox virtual environments.
+* To run an individual step, use ``tox -e {step}`` for example, ``tox -e test``, ``tox -e build-docs``, etc.
+
+Typically, the CI tests run in github actions will use tox to run as above. See also [ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
+
+## Outside of tox:
+
+The below assume you are running steps without tox, and that all requirements are installed into a conda environment, e.g. with ``pip install -r requirements/all.txt``.
+
+_NOTE: Tox will run these for you, this is specifically if there is a requirement to setup environment and run these outside the purview of tox._
 
 ### Linting:
 Facilitates in testing typos, syntax, style, and other simple code analysis tests.

@@ -1,11 +1,1 @@
--r prd.txt
-
-bandit==1.7.5
-build==1.0.3
-httpx==0.26.0
-pytest==8.0.0
-pytest-cov==4.1.0
-ruff==0.1.15
-setuptools==69.0.3
-setuptools_scm[toml]==8.0.4
 tox==4.12.1

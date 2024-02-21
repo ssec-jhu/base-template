@@ -80,7 +80,7 @@ exclude = [
     "_version.py"
 ]
 
-ignore = [
+lint.ignore = [
 ]
 
 target-version = "py311"

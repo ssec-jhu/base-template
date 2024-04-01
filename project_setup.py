@@ -1,6 +1,6 @@
 # BSD 3-Clause License
 
-# Copyright (c) 2023, Scientific Software Engineering Center at JHU
+# Copyright (c) 2024, Scientific Software Engineering Center at JHU
 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,10 +27,19 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+"""Helps setup a new project based on this template."""
+
 import configparser
 import functools
 import itertools
 import os
+from typing import Callable, Iterable, Optional
+
+MSG_ERR_READ = "Error reading {file_path} ❌"
+MSG_ERR_WRITE = "Error writing to {file_path} ❌"
+MSG_GIT_URL_NOT_FOUND = "--Remote URL not found in .git/config--"
+PROMPT_REMOTE_REPO = "Enter the URL of the remote repository [{url_guess}]: "
+PROMPT_PKG_NAME = "Enter the package name [{name_guess}]: "
 
 def make_name_safe(name:str) -> str:
     """Makes a string safe to use as a package name.
@@ -56,18 +65,80 @@ def valid_file_predicate(file_path:str) -> bool:
 
     """
     not_in_git = not file_path.startswith("./.git/")
-    not_image =  not file_path.endswith(".png") and not file_path.endswith(".jpg")
+    not_image =  (
+        not file_path.endswith(".png")
+        and not file_path.endswith(".jpg")
+        and not file_path.endswith(".jpeg")
+    )
     not_binary = not file_path.endswith(".DS_Store")
     not_this = not file_path.endswith("project_setup.py")
 
     return not_in_git and not_image and not_binary and not_this
 
+
+def get_repo_url(
+    file_contents:Iterable[str],
+    input_func:Callable[[Optional[str]], str] = input
+) -> str:
+    """Gets the URL of the remote repository.
+
+    Args:
+        file_contents (Iterable[str]): The contents of the .git/config file.
+        input_func (Callable[[Optional[str]], str], optional): The input function to use. Defaults to input.
+
+    Returns:
+        str: The URL of the remote repository.
+
+    """
+    # cp.read("./.git/config")
+    cp = configparser.ConfigParser()
+    try:
+        cp.read_file(file_contents)
+    except configparser.MissingSectionHeaderError:
+        url_guess = MSG_GIT_URL_NOT_FOUND
+
+    try:
+        url_guess = cp['remote "origin"']["url"]
+    except KeyError:
+        url_guess = MSG_GIT_URL_NOT_FOUND
+
+    # this could be a problem if someone accidentally hits enter and the URL is
+    # is set to MSG_GIT_URL_NOT_FOUND. Maybe change to a while loop if this
+    # becomes an issue.
+    repo_url = input_func(PROMPT_REMOTE_REPO.format(url_guess=url_guess)).strip()
+
+    return repo_url or url_guess
+
+
+def get_package_name(
+    repo_url:str,
+    input_func:Callable[[Optional[str]], str] = input
+) -> str:
+    """Gets the package name from the user.
+
+    Guesses the package name from the repo URL.
+
+    Args:
+        repo_url (str): The URL of the remote repository.
+        input_func (Callable[[Optional[str]], str], optional): The input function to use. Defaults to input.
+
+    Returns:
+        str: The package name.
+    """
+    repo_name = os.path.basename(repo_url).split('/')[-1].split('.')[0]
+    guessed_name = make_name_safe(repo_name)
+
+    input_name = input_func(PROMPT_PKG_NAME.format(name_guess=guessed_name)).strip()
+
+    return input_name or guessed_name
+
+
 def replace_file_contents(
     new_str:str,
     old_str:str,
     file_path:str,
-    print_confirmation:bool=True
-) -> None:
+    output_func:Callable[[str], None] = print,
+) -> bool:
     """Replaces instances of `old_str` with `new_str` in file at file_path.
 
     Args:
@@ -82,9 +153,9 @@ def replace_file_contents(
     try:
         with open(file_path, "r") as f:
             content = f.read()
-    except Exception as e:
-        print(f"Error reading {file_path} ❌")
-        return
+    except OSError:
+        output_func(MSG_ERR_READ.format(file_path=file_path))
+        return False
 
     new_content = content.replace(old_str, new_str)
 
@@ -92,13 +163,11 @@ def replace_file_contents(
         try:
             with open(file_path, "w") as f:
                 f.write(new_content)
-        except Exception as e:
-            print(f"Error writing to {file_path} ❌")
-            return
-        else:
-            if print_confirmation:
-                print(f"Upadated {file_path} ✅")
+        except OSError:
+            output_func(MSG_ERR_WRITE.format(file_path=file_path))
+            return False
 
+    return True
 
 
 def replace_package_name(new_package_name:str) -> None:
@@ -150,20 +219,6 @@ def replace_package_name(new_package_name:str) -> None:
     print()
 
 
-def get_repo_url() -> str:
-    """Gets the URL of the remote repository.
-
-    Returns:
-        str: The URL of the remote repository.
-
-    """
-    cp = configparser.ConfigParser()
-    cp.read("./.git/config")
-    url_guess = cp['remote "origin"']['url']
-    repo_url = input(f"Enter the URL of the remote repository [{url_guess}]: ").strip()
-
-    return repo_url or url_guess
-
 def update_url_references(repo_url:str) -> None:
     """Updates the URL references in the repository.
 
@@ -192,25 +247,6 @@ def update_url_references(repo_url:str) -> None:
 
     replace_file_contents(repo_url, base_url, "pyproject.toml", False)
     print("Updated pyproject.toml [project.urls] ✅\n")
-
-
-def get_package_name(repo_url:str) -> str:
-    """Gets the package name from the user.
-
-    Guesses the package name from the repo URL.
-
-    Args:
-        repo_url (str): The URL of the remote repository.
-
-    Returns:
-        str: The package name.
-    """
-    repo_name = os.path.basename(repo_url).split('/')[-1].split('.')[0]
-    guessed_name = make_name_safe(repo_name)
-
-    input_name = input(f"Enter the package name [{guessed_name}]: ").strip()
-
-    return input_name or guessed_name
 
 
 def self_destruct() -> None:

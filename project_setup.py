@@ -35,8 +35,6 @@ import itertools
 import os
 from typing import Callable, Iterable, Optional
 
-MSG_ERR_READ = "Error reading {file_path} ❌"
-MSG_ERR_WRITE = "Error writing to {file_path} ❌"
 MSG_GIT_URL_NOT_FOUND = "--Remote URL not found in .git/config--"
 PROMPT_REMOTE_REPO = "Enter the URL of the remote repository [{url_guess}]: "
 PROMPT_PKG_NAME = "Enter the package name [{name_guess}]: "
@@ -137,7 +135,6 @@ def replace_file_contents(
     new_str:str,
     old_str:str,
     file_path:str,
-    output_func:Callable[[str], None] = print,
 ) -> bool:
     """Replaces instances of `old_str` with `new_str` in file at file_path.
 
@@ -145,29 +142,28 @@ def replace_file_contents(
         old_str (str): The string to replace.
         new_str (str): The string to replace `old_str` with.
         file_path (str): The path to the file to modify.
-        print_confirmation (bool, optional): Whether to print a confirmation message. Defaults to True.
 
     Returns:
         None
     """
-    try:
-        with open(file_path, "r") as f:
-            content = f.read()
-    except OSError:
-        output_func(MSG_ERR_READ.format(file_path=file_path))
-        return False
+    with open(file_path, "r") as f:
+        content = f.read()
 
     new_content = content.replace(old_str, new_str)
 
     if new_content != content:
-        try:
-            with open(file_path, "w") as f:
-                f.write(new_content)
-        except OSError:
-            output_func(MSG_ERR_WRITE.format(file_path=file_path))
-            return False
+        with open(file_path, "w") as f:
+            f.write(new_content)
+        return True
 
-    return True
+    return False
+
+
+def self_destruct(input_func:Callable[[str], str] = input) -> None:
+    """Deletes this file."""
+
+    if input_func("Delete this file? [y/N]: ").strip().lower() == "y":
+        os.remove(__file__)
 
 
 def replace_package_name(new_package_name:str) -> None:
@@ -192,10 +188,8 @@ def replace_package_name(new_package_name:str) -> None:
         "<" + old_package_name + ">",
     )
 
-
     #change project_dir
     os.rename(old_package_name, new_package_name)
-
 
     # get all files with paths in the repo directory
     dir_file_pairs = itertools.chain.from_iterable(map(
@@ -247,13 +241,6 @@ def update_url_references(repo_url:str) -> None:
 
     replace_file_contents(repo_url, base_url, "pyproject.toml", False)
     print("Updated pyproject.toml [project.urls] ✅\n")
-
-
-def self_destruct() -> None:
-    """Deletes this file."""
-
-    if input("Delete this file? [y/N]: ").strip().lower() == "y":
-        os.remove(__file__)
 
 
 def main():

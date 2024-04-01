@@ -27,7 +27,9 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
 from typing import Iterable
+
 import pytest
 
 import project_setup as ps
@@ -146,3 +148,76 @@ def test_get_package_name(
     input_func = InputMock(prompt_reply=prompt_reply)
     assert ps.get_package_name(repo_url, input_func)==expected_output
     assert input_func.inputs == [expected_prompt]
+
+
+@pytest.mark.parametrize(
+    "file_contents, new_string, old_string, expected", [
+        # old texts exists and is replaced
+        (
+            "This is a file\nwith old_text\nand more text\n",
+            "new_text",
+            "old_text",
+            True
+        ),
+        # old text does not exist
+        (
+            "This is a file\nwith some text\nand more text\n",
+            "new_text",
+            "no_text",
+            False
+        ),
+    ]
+)
+def test_replace_file_contents(
+    file_contents:str,
+    new_string:str,
+    old_string:str,
+    expected:bool,
+):
+    with open("tmp.txt", "w") as f:
+        f.write(file_contents)
+
+    actual_file_changed = ps.replace_file_contents(new_string, old_string, "tmp.txt")
+
+    with open("tmp.txt", "r") as f:
+        actual_contents = f.read()
+
+    old_not_there = old_string not in actual_contents
+    new_there = new_string in actual_contents
+
+    os.remove("tmp.txt")
+
+    assert actual_file_changed == expected
+    if expected:
+        assert expected and old_not_there
+        assert expected and new_there
+    else:
+        assert old_string not in file_contents
+        assert file_contents == actual_contents
+
+
+@pytest.mark.parametrize(
+    "input_reply, file_removed", [
+        ("y", True),
+        ("Y", True),
+        ("n", False),
+        ("N", False),
+        ("", False),
+    ]
+)
+def test_self_destruct(input_reply:str, file_removed:bool):
+    with open("project_setup.py", "r") as f:
+        ps_contents = f.read()
+
+    input_func = InputMock(prompt_reply=input_reply)
+    ps.self_destruct(input_func)
+
+    file_exists = os.path.exists("project_setup.py")
+
+    with open("project_setup.py", "w") as f:
+        f.write(ps_contents)
+
+    if file_removed:
+        assert not file_exists
+    else:
+        assert file_exists

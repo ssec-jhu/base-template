@@ -44,6 +44,7 @@ UPDATED_README_CICD = "Updated README.md -> CI/Security badges"
 UPDATED_README_RTD = "Updated README.md -> RTD badge"
 UPDATED_README_CODECOV = "Updated README.md -> codecov badge"
 UPDATED_FILE = "Replaced `{template_name}` with `{package_name}` in {file_path} ✅"
+SETUP_COMPLETE = "{package_name} setup complete! 🎉🎉🎉\n"
 
 def make_name_safe(name:str) -> str:
     """Makes a string safe to use as a package name.
@@ -215,7 +216,10 @@ def run_setup(
     # replace the bracketed version, but not vice versa.
 
     # update the top_level app name dir:
-    os.rename(TEMPLATE_PACKAGE_NAME, package_name)
+    os.rename(
+        os.path.join(dir_path, TEMPLATE_PACKAGE_NAME),
+        os.path.join(dir_path, package_name)
+    )
 
     # get all files with paths in the repo directory
     dir_file_pairs = itertools.chain.from_iterable(map(
@@ -239,7 +243,7 @@ def run_setup(
 
     self_destruct(input_func)
 
-    output_func(f"{package_name} setup complete! 🎉🎉🎉\n")
+    output_func(SETUP_COMPLETE.format(package_name=package_name))
 
 
 if __name__ == '__main__':

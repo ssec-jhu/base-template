@@ -221,3 +221,20 @@ def test_self_destruct(input_reply:str, file_removed:bool):
         assert not file_exists
     else:
         assert file_exists
+
+@pytest.mark.parametrize(
+    "repo_url, expected", [
+        ("https://www.github.com/amazing-org/really-great-project.git", "really-great-project"),
+    ]
+)
+def test_rtd_project_guess(repo_url:str, expected:str):
+    assert ps.rtd_project_guess(repo_url) == expected
+
+
+@pytest.mark.parametrize(
+    "repo_url, expected", [
+        ("https://www.github.com/amazing-org/really-great-project.git", "amazing-org/really-great-project"),
+    ]
+)
+def test_codecov_project_guess(repo_url:str, expected:str):
+    assert ps.codecov_project_guess(repo_url) == expected

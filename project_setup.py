@@ -30,11 +30,12 @@
 """Helps setup a new project based on this template."""
 
 import configparser
-import functools
 import itertools
 import os
 from typing import Callable, Iterable, Optional
 
+TEMPLATE_PACKAGE_NAME = "package_name"
+TEMPLATE_REPO_URL = "https://github.com/ssec-jhu/base-template"
 MSG_GIT_URL_NOT_FOUND = "--Remote URL not found in .git/config--"
 PROMPT_REMOTE_REPO = "Enter the URL of the remote repository [{url_guess}]: "
 PROMPT_PKG_NAME = "Enter the package name [{name_guess}]: "
@@ -42,6 +43,7 @@ UPDATED_PYPROJECT_TOML = "pyproject.toml [project.urls]"
 UPDATED_README_CICD = "Updated README.md -> CI/Security badges"
 UPDATED_README_RTD = "Updated README.md -> RTD badge"
 UPDATED_README_CODECOV = "Updated README.md -> codecov badge"
+UPDATED_FILE = "Replaced `{template_name}` with `{package_name}` in {file_path} ✅"
 
 def make_name_safe(name:str) -> str:
     """Makes a string safe to use as a package name.
@@ -164,99 +166,84 @@ def replace_file_contents(
 
 
 def self_destruct(input_func:Callable[[str], str] = input) -> None:
-    """Deletes this file."""
+    """Deletes this file upon confirmation."""
 
     if input_func("Delete this file? [y/N]: ").strip().lower() == "y":
         os.remove(__file__)
 
 
-def replace_package_name(new_package_name:str) -> None:
-    """Replaces the package name in all files in the repo.
-
-    Args:
-        new_package_name (str): The new package name.
-
-    Returns:
-        None
-    """
-    old_package_name = "package_name"
-    replace_func = functools.partial(
-        replace_file_contents,
-        new_package_name,
-        old_package_name,
-    )
-
-    replace_func_brackets = functools.partial(
-        replace_file_contents,
-        new_package_name,
-        "<" + old_package_name + ">",
-    )
-
-    #change project_dir
-    os.rename(old_package_name, new_package_name)
-
-    # get all files with paths in the repo directory
-    dir_file_pairs = itertools.chain.from_iterable(map(
-        lambda walk_tup: zip(itertools.repeat(walk_tup[0]), walk_tup[2]),
-        os.walk(".")
-    ))
-    files_to_check = list(filter(
-        valid_file_predicate,
-        map(lambda x: os.path.join(*x), dir_file_pairs)
-    ))
-
-    # replace the package name in all files
-    print(f"Replacing `<{old_package_name}>` with `{new_package_name}` in all files...")
-    for _ in map(replace_func_brackets, files_to_check):
-        pass
-    print()
-
-    print(f"Replacing `{old_package_name}` with `{new_package_name}` in all files...")
-    for _ in map(replace_func, files_to_check):
-        pass
-    print()
+def rtd_project_guess(repo_url:str) -> str:
+    """Guesses the RTD project name from the repo URL."""
+    return repo_url.replace(".git", "").split('/')[-1]
 
 
-def main():
-    # These are the things we need to replace
-    template_package_name = "package_name"
-    template_repo_url = "https://github.com/ssec-jhu/base-template"
+def codecov_project_guess(repo_url:str) -> str:
+    """Guesses the codecov project name from the repo URL."""
+    return "/".join(repo_url.replace(".git", "").split('/')[-2:])
 
+
+def run_setup(
+    repo_url:str,
+    package_name:str,
+    dir_path:str = ".",
+    input_func:Callable[[Optional[str]], str] = input,
+    output_func:Callable[[str], None] = print,
+) -> None:
     # Update pyproject.toml and README.md, which contain the repo URL===========
-    repo_url = get_repo_url().replace(".git", "")
-    rtd_project_guess = repo_url.split('/')[-1]
-    codecov_project_guess = "/".join(repo_url.split('/')[-2:])
+    rtd_guess = rtd_project_guess(repo_url)
+    codecov_guess = codecov_project_guess(repo_url)
 
     replace_args = zip(
-        [repo_url, repo_url, rtd_project_guess, codecov_project_guess],
-        [template_repo_url, template_repo_url,  "ssec-jhu-base-template", "ssec-jhu/base-template"],
-        ["pyproject.toml", "./README.md", "./README.md", "./README.md"],
+        [repo_url, repo_url, rtd_guess, codecov_guess],
+        [TEMPLATE_REPO_URL, TEMPLATE_REPO_URL,  "ssec-jhu-base-template", "ssec-jhu/base-template"],
+        map(lambda f: os.path.join(dir_path, f), ["pyproject.toml", "README.md", "README.md", "README.md"]),
         [UPDATED_PYPROJECT_TOML, UPDATED_README_CICD, UPDATED_README_RTD, UPDATED_README_CODECOV]
     )
 
     for new_str, old_str, file_path, msg in replace_args:
         if replace_file_contents(new_str, old_str, file_path):
-            print(msg + "✅")
+            output_func(msg + "✅")
         else:
-            print(msg + "❌")
+            output_func(msg + "❌")
     # ==========================================================================
 
 
     # Update occurences of the package name in the project======================
+    # Sometimes the template package name is referred to using `package_name`
+    # and other times it is referred to by `<package_name>`. First replace the
+    # brackted version becaused replacing the unbracketed version will also
+    # replace the bracketed version, but not vice versa.
 
+    # update the top_level app name dir:
+    os.rename(TEMPLATE_PACKAGE_NAME, package_name)
 
+    # get all files with paths in the repo directory
+    dir_file_pairs = itertools.chain.from_iterable(map(
+        lambda walk_tup: zip(itertools.repeat(walk_tup[0]), walk_tup[2]), # we want the path and filename
+        os.walk(dir_path) # yields a tuple (dirpath:str, dirnames, filenames: List[str])
+    ))
+
+    # filter out files that we don't want to modify
+    files_to_check = list(filter(
+        valid_file_predicate,
+        map(lambda x: os.path.join(*x), dir_file_pairs)
+    ))
+
+    # order matters, replace the bracketed version first
+    for template_name in ["<" + TEMPLATE_PACKAGE_NAME + ">", TEMPLATE_PACKAGE_NAME]:
+        for file_path in files_to_check:
+            # only print positive results
+            if replace_file_contents(package_name, template_name, file_path):
+                output_func(UPDATED_FILE.format(template_name=template_name, package_name=package_name, file_path=file_path))
     # ==========================================================================
 
+    self_destruct(input_func)
 
-
-
-    package_name = get_package_name(repo_url)
-    replace_package_name(package_name)
-
-    self_destruct()
-
-    print(f"{package_name} setup complete! 🎉🎉🎉\n")
+    output_func(f"{package_name} setup complete! 🎉🎉🎉\n")
 
 
 if __name__ == '__main__':
-    main()
+    with open(".git/config", "r") as f:
+        repo_url = get_repo_url(f).replace(".git", "")
+    package_name = get_package_name(repo_url)
+    run_setup(repo_url=repo_url, package_name=package_name)

@@ -38,6 +38,10 @@ from typing import Callable, Iterable, Optional
 MSG_GIT_URL_NOT_FOUND = "--Remote URL not found in .git/config--"
 PROMPT_REMOTE_REPO = "Enter the URL of the remote repository [{url_guess}]: "
 PROMPT_PKG_NAME = "Enter the package name [{name_guess}]: "
+UPDATED_PYPROJECT_TOML = "pyproject.toml [project.urls]"
+UPDATED_README_CICD = "Updated README.md -> CI/Security badges"
+UPDATED_README_RTD = "Updated README.md -> RTD badge"
+UPDATED_README_CODECOV = "Updated README.md -> codecov badge"
 
 def make_name_safe(name:str) -> str:
     """Makes a string safe to use as a package name.
@@ -213,39 +217,38 @@ def replace_package_name(new_package_name:str) -> None:
     print()
 
 
-def update_url_references(repo_url:str) -> None:
-    """Updates the URL references in the repository.
+def main():
+    # These are the things we need to replace
+    template_package_name = "package_name"
+    template_repo_url = "https://github.com/ssec-jhu/base-template"
 
-    Updates URLs in the README.md and pyproject.toml files.
-
-    Args:
-        repo_url (str): The URL of the remote repository.
-
-    Returns:
-        None
-
-    """
-    base_url = "https://github.com/ssec-jhu/base-template"
-    repo_url = repo_url.replace(".git", "")
+    # Update pyproject.toml and README.md, which contain the repo URL===========
+    repo_url = get_repo_url().replace(".git", "")
     rtd_project_guess = repo_url.split('/')[-1]
     codecov_project_guess = "/".join(repo_url.split('/')[-2:])
 
-    replace_file_contents(repo_url, base_url, "./README.md", True)
-    print("Updated README.md -> CI/Security badges ✅")
+    replace_args = zip(
+        [repo_url, repo_url, rtd_project_guess, codecov_project_guess],
+        [template_repo_url, template_repo_url,  "ssec-jhu-base-template", "ssec-jhu/base-template"],
+        ["pyproject.toml", "./README.md", "./README.md", "./README.md"],
+        [UPDATED_PYPROJECT_TOML, UPDATED_README_CICD, UPDATED_README_RTD, UPDATED_README_CODECOV]
+    )
 
-    replace_file_contents(rtd_project_guess, "ssec-jhu-base-template", "./README.md", False)
-    print("Updated README.md -> RTD badge ✅")
-
-    replace_file_contents(codecov_project_guess, "ssec-jhu/base-template", "./README.md", False)
-    print("Updated README.md -> codecov badge ✅")
-
-    replace_file_contents(repo_url, base_url, "pyproject.toml", False)
-    print("Updated pyproject.toml [project.urls] ✅\n")
+    for new_str, old_str, file_path, msg in replace_args:
+        if replace_file_contents(new_str, old_str, file_path):
+            print(msg + "✅")
+        else:
+            print(msg + "❌")
+    # ==========================================================================
 
 
-def main():
-    repo_url = get_repo_url()
-    update_url_references(repo_url)
+    # Update occurences of the package name in the project======================
+
+
+    # ==========================================================================
+
+
+
 
     package_name = get_package_name(repo_url)
     replace_package_name(package_name)

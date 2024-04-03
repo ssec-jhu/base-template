@@ -163,6 +163,7 @@ def test_run_setup(repo_url:str, package_name:str):
 
     # undo the two commits done by run_setup
     git.Repo().git.reset("--hard", "HEAD~2")
+    git.Repo().git.clean("-f", "-d", "-x")
 
     # check pyproject.toml
     assert template_url not in actual_pyproject

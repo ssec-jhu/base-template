@@ -3,6 +3,8 @@ from pathlib import Path
 import shutil
 from typing import Iterable, List, Tuple
 
+# this is GitPython
+import git
 import pytest
 
 import project_setup as ps
@@ -135,127 +137,53 @@ def test_codecov_project_guess(repo_url:str, expected:str):
     assert ps.codecov_project_guess(repo_url) == expected
 
 
-# @pytest.mark.parametrize(
-#     "repo_url, package_name", [
-#     ("https://www.github.com/good-org/amazing-project.git", "amazing_project"),
-# ])
-# def test_run_setup(repo_url:str, package_name:str):
-#     base_dir = "tests/tmp"
-#     def with_base(f:str):
-#         return os.path.join(base_dir, f)
-#     # setup a mock repo structure
-#     os.makedirs(with_base("package_name"), exist_ok=True)
-#     os.makedirs(with_base(".git"), exist_ok=True)
+@pytest.mark.parametrize(
+    "repo_url, package_name", [
+    ("https://www.github.com/good-org/amazing-project.git", "amazing_project"),
+])
+def test_run_setup(repo_url:str, package_name:str):
 
-#     mock_pyproject = "\n".join([
-#         "[project]",
-#         'name = "package_name"',
-#         "",
-#         '[project.urls]',
-#         'homepage = "https://github.com/ssec-jhu/base-template"',
-#         'documentation = "https://github.com/ssec-jhu/base-template"',
-#         'repository = "https://github.com/ssec-jhu/base-template"',
-#         "",
-#     ])
+    ps.run_setup(repo_url, package_name)
 
-#     with open(with_base("pyproject.toml"), "w") as f:
-#         f.write(mock_pyproject)
+    template_package_name = ps.TEMPLATE_PACKAGE_NAME
+    template_url = ps.TEMPLATE_REPO_URL
 
+    # open pyproject.toml
+    with open("pyproject.toml", "r") as f:
+        actual_pyproject = f.read()
 
-#     mock_git_config = "\n".join([
-#         '[remote "origin"]',
-#         '    url = https://github.com/ssec-jhu/base-template.git',
-#         '    fetch = +refs/heads/*:refs/remotes/origin/*',
-#     ])
+    # open README.md
+    with open("README.md", "r") as f:
+        actual_readme = f.read()
 
-#     with open(with_base(".git/config"), "w") as f:
-#         f.write(mock_git_config)
+    with open(f"{package_name}/app/main.py", "r") as f:
+        actual_app = f.read()
 
-#     mock_readme = "\n".join([
-#         "# SSEC-JHU <package_name>",
-#         "",
-#         "[![CI](https://github.com/ssec-jhu/base-template/actions/workflows/ci.yml/badge.svg)](https://github.com/ssec-jhu/base-template/actions/workflows/ci.yml)",
-#         "[![Documentation Status](https://readthedocs.org/projects/ssec-jhu-base-template/badge/?version=latest)](https://ssec-jhu-base-template.readthedocs.io/en/latest/?badge=latest)",
-#         "[![codecov](https://codecov.io/gh/ssec-jhu/base-template/branch/main/graph/badge.svg?token=0KPNKHRC2V)](https://codecov.io/gh/ssec-jhu/base-template)",
-#         "[![Security](https://github.com/ssec-jhu/base-template/actions/workflows/security.yml/badge.svg)](https://github.com/ssec-jhu/base-template/actions/workflows/security.yml)",
-#         "",
-#         "This is a package_name kind of thing.",
-#     ])
+    with open(f"{package_name}/util.py", "r") as f:
+        actual_util = f.read()
 
-#     with open(with_base("README.md"), "w") as f:
-#         f.write(mock_readme)
+    # undo the two commits done by run_setup
+    git.Repo().reset("hard", "HEAD~2")
 
-#     # a file with a change
-#     file_with_change = "\n".join([
-#         "import os",
-#         "",
-#         "package_name.app.main()",
-#     ])
-#     with open(with_base("package_name/app.py"), "w") as f:
-#         f.write(file_with_change)
+    # check pyproject.toml
+    assert template_url not in actual_pyproject
+    assert template_package_name not in actual_pyproject
+    assert package_name in actual_pyproject
+    assert repo_url in actual_pyproject
 
+    # check README.md
+    assert template_url not in actual_readme
+    assert template_package_name not in actual_readme
+    assert package_name in actual_readme
+    assert repo_url in actual_readme
+    assert ps.codecov_project_guess(repo_url) in actual_readme
+    assert ps.rtd_project_guess(repo_url) in actual_readme
 
-#     # a file without a change
-#     file_without_change = "\n".join([
-#         "import numpy as np",
-#         "",
-#         "np.arange(100)",
+    # check the app.py
+    assert template_package_name not in actual_app
+    assert package_name in actual_app
 
-#     ])
-#     with open(with_base("package_name/other.py"), "w") as f:
-#         f.write(file_without_change)
-
-
-#     input_func = InputMock(prompt_replies=[""])
-#     outputs = []
-#     def output_func(x:str) -> None:
-#         outputs.append(x)
-
-
-#     ps.run_setup(repo_url, package_name, base_dir, input_func, output_func)
-
-
-#     template_package_name = "package_name"
-#     template_url = "https://github.com/ssec-jhu/base-template"
-
-#     # open pyproject.toml
-#     with open(with_base("pyproject.toml"), "r") as f:
-#         actual_pyproject = f.read()
-
-#     # open README.md
-#     with open(with_base("README.md"), "r") as f:
-#         actual_readme = f.read()
-
-#     # open package_name/app.py
-#     with open(with_base(f"{package_name}/app.py"), "r") as f:
-#         actual_app = f.read()
-
-#     # open package_name/other.py
-#     with open(with_base(f"{package_name}/other.py"), "r") as f:
-#         actual_other = f.read()
-
-#     # clean up the dir, just in case the test fails
-#     shutil.rmtree(base_dir)
-
-#     # check pyproject.toml
-#     assert template_url not in actual_pyproject
-#     assert template_package_name not in actual_pyproject
-#     assert package_name in actual_pyproject
-#     assert repo_url in actual_pyproject
-
-#     # check README.md
-#     assert template_url not in actual_readme
-#     assert template_package_name not in actual_readme
-#     assert package_name in actual_readme
-#     assert repo_url in actual_readme
-#     assert ps.codecov_project_guess(repo_url) in actual_readme
-#     assert ps.rtd_project_guess(repo_url) in actual_readme
-
-#     # check the app.py
-#     assert template_package_name not in actual_app
-#     assert package_name in actual_app
-
-#     # check the other.py
-#     assert template_package_name not in actual_other
-#     assert package_name not in actual_other
+    # check the other.py
+    assert template_package_name not in actual_util
+    assert package_name not in actual_util
 

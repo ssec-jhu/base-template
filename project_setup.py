@@ -94,8 +94,6 @@ def codecov_project_guess(
 def run_setup(
     repo_url:str,
     package_name:str,
-    dir_path:Path = Path("."),
-    output_func:Callable[[str], None] = print,
 ) -> None:
 
     # Update pyproject.toml and README.md, which contain the repo URL===========
@@ -107,9 +105,9 @@ def run_setup(
     ]
     if replace_file_contents(
         pyproject_toml_replacement_pairs,
-        dir_path / Path("pyproject.toml"),
+        Path("pyproject.toml"),
     ):
-        output_func(UPDATED_PYPROJECT_TOML + "✅")
+        print(UPDATED_PYPROJECT_TOML + "✅")
 
     readme_replacement_pairs = [
         (TEMPLATE_REPO_URL, repo_url),
@@ -118,9 +116,9 @@ def run_setup(
     ]
     if replace_file_contents(
         readme_replacement_pairs,
-        dir_path / Path("README.md"),
+        Path("README.md"),
     ):
-        output_func(UPDATED_README + "✅")
+        print(UPDATED_README + "✅")
 
 
     # Update occurences of the package name in the project======================
@@ -133,7 +131,7 @@ def run_setup(
     repo = git.Repo()
     repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
     repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
-    output_func(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
+    print(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
 
     # filter out files that we don't want to modify
     files_to_check = list(filter(
@@ -149,13 +147,13 @@ def run_setup(
     for file_path in files_to_check:
         # only print positive results
         if replace_file_contents(package_name_replacement_pairs, file_path):
-            output_func(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
+            print(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
 
     self_destruct()
 
     repo.git.commit("-am", f"updated package name to {package_name} in files")
 
-    output_func(SETUP_COMPLETE.format(package_name=package_name))
+    print(SETUP_COMPLETE.format(package_name=package_name))
 
 
 if __name__ == '__main__':

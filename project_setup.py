@@ -15,6 +15,7 @@ TEMPLATE_CODECOV = "ssec-jhu/base-template"
 
 UPDATED_PYPROJECT_TOML = "pyproject.toml [project.urls]"
 UPDATED_README = "Updated README.md"
+UPDATED_DIR = "Renamed {old_dir} to {new_dir} ✅"
 UPDATED_FILE = "Updated package_name to {package_name} in {file_path} ✅"
 SETUP_COMPLETE = "{package_name} setup complete! 🎉🎉🎉\n"
 
@@ -129,7 +130,10 @@ def run_setup(
     # replace the bracketed version, but not vice versa.
 
     # use git to move to preserve the git history
-    git.Repo().git.mv(TEMPLATE_PACKAGE_NAME, package_name)
+    repo = git.Repo()
+    repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
+    repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
+    output_func(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
 
     # filter out files that we don't want to modify
     files_to_check = list(filter(
@@ -147,7 +151,9 @@ def run_setup(
         if replace_file_contents(package_name_replacement_pairs, file_path):
             output_func(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
 
-    # self_destruct()
+    self_destruct()
+
+    repo.git.commit("-am", f"updated package name to {package_name} in files")
 
     output_func(SETUP_COMPLETE.format(package_name=package_name))
 

@@ -29,9 +29,10 @@
 
 """Helps setup a new project based on this template."""
 
-import configparser
 import itertools
 import os
+from pathlib import Path
+import subprocess
 from typing import Callable, Iterable, Optional
 
 TEMPLATE_PACKAGE_NAME = "package_name"
@@ -82,42 +83,27 @@ def valid_file_predicate(file_path:str) -> bool:
 
 
 def get_repo_url(
-    file_contents:Iterable[str],
-    input_func:Callable[[Optional[str]], str] = input
+    user_provided_repo_url:str = "",
 ) -> str:
     """Gets the URL of the remote repository.
 
     Args:
-        file_contents (Iterable[str]): The contents of the .git/config file.
-        input_func (Callable[[Optional[str]], str], optional): The input function to use. Defaults to input.
+        user_provided_repo_url (str, optional): The URL of the remote repository. Defaults to "".
 
     Returns:
         str: The URL of the remote repository.
 
     """
-    # cp.read("./.git/config")
-    cp = configparser.ConfigParser()
-    try:
-        cp.read_file(file_contents)
-    except configparser.MissingSectionHeaderError:
-        url_guess = MSG_GIT_URL_NOT_FOUND
+    url_guess = subprocess.check_output(
+        ['git', 'remote', 'get-url', 'origin']
+    ).decode().strip()
 
-    try:
-        url_guess = cp['remote "origin"']["url"]
-    except KeyError:
-        url_guess = MSG_GIT_URL_NOT_FOUND
-
-    # this could be a problem if someone accidentally hits enter and the URL is
-    # is set to MSG_GIT_URL_NOT_FOUND. Maybe change to a while loop if this
-    # becomes an issue.
-    repo_url = input_func(PROMPT_REMOTE_REPO.format(url_guess=url_guess)).strip()
-
-    return repo_url or url_guess
+    return user_provided_repo_url or url_guess
 
 
 def get_package_name(
     repo_url:str,
-    input_func:Callable[[Optional[str]], str] = input
+    user_provided_package_name:str = "",
 ) -> str:
     """Gets the package name from the user.
 
@@ -125,17 +111,13 @@ def get_package_name(
 
     Args:
         repo_url (str): The URL of the remote repository.
-        input_func (Callable[[Optional[str]], str], optional): The input function to use. Defaults to input.
+        user_provided_package_name (str, optional): The package name provided by the user. Defaults to "".
 
     Returns:
         str: The package name.
     """
-    repo_name = os.path.basename(repo_url).split('/')[-1].split('.')[0]
-    guessed_name = make_name_safe(repo_name)
-
-    input_name = input_func(PROMPT_PKG_NAME.format(name_guess=guessed_name)).strip()
-
-    return input_name or guessed_name
+    guessed_name = make_name_safe(Path(repo_url).stem)
+    return user_provided_package_name or guessed_name
 
 
 def replace_file_contents(
@@ -166,21 +148,26 @@ def replace_file_contents(
     return False
 
 
-def self_destruct(input_func:Callable[[str], str] = input) -> None:
-    """Deletes this file upon confirmation."""
-
-    if input_func("Delete this file? [y/N]: ").strip().lower() == "y":
-        os.remove(__file__)
+def self_destruct() -> None:
+    """Deletes this file."""
+    os.remove(__file__)
 
 
-def rtd_project_guess(repo_url:str) -> str:
+def rtd_project_guess(
+    repo_url:str,
+    user_provided_rtd_name:str = "",
+) -> str:
     """Guesses the RTD project name from the repo URL."""
-    return repo_url.replace(".git", "").split('/')[-1]
+    return user_provided_rtd_name or Path(repo_url).stem
 
 
-def codecov_project_guess(repo_url:str) -> str:
+def codecov_project_guess(
+    repo_url:str,
+    user_provided_codecov_name:str = "",
+) -> str:
     """Guesses the codecov project name from the repo URL."""
-    return "/".join(repo_url.replace(".git", "").split('/')[-2:])
+    guess = "/".join(Path(repo_url).parts[-2:]).replace(".git", "")
+    return user_provided_codecov_name or guess
 
 
 def run_setup(

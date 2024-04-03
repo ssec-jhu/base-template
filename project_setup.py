@@ -1,144 +1,66 @@
-# BSD 3-Clause License
-
-# Copyright (c) 2024, Scientific Software Engineering Center at JHU
-
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-
-# 1. Redistributions of source code must retain the above copyright notice, this
-#    list of conditions and the following disclaimer.
-
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-
-# 3. Neither the name of the copyright holder nor the names of its
-#    contributors may be used to endorse or promote products derived from
-#    this software without specific prior written permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """Helps setup a new project based on this template."""
-
-import itertools
+import argparse
+import functools
 import os
 from pathlib import Path
-import subprocess
-from typing import Callable, Iterable, Optional
+from typing import Callable, List, Tuple
+
+# this is GitPython
+import git
 
 TEMPLATE_PACKAGE_NAME = "package_name"
 TEMPLATE_REPO_URL = "https://github.com/ssec-jhu/base-template"
-MSG_GIT_URL_NOT_FOUND = "--Remote URL not found in .git/config--"
-PROMPT_REMOTE_REPO = "Enter the URL of the remote repository [{url_guess}]: "
-PROMPT_PKG_NAME = "Enter the package name [{name_guess}]: "
+TEMPLATE_RTD = "ssec-jhu-base-template"
+TEMPLATE_CODECOV = "ssec-jhu/base-template"
+
 UPDATED_PYPROJECT_TOML = "pyproject.toml [project.urls]"
-UPDATED_README_CICD = "Updated README.md -> CI/Security badges"
-UPDATED_README_RTD = "Updated README.md -> RTD badge"
-UPDATED_README_CODECOV = "Updated README.md -> codecov badge"
-UPDATED_FILE = "Replaced `{template_name}` with `{package_name}` in {file_path} ✅"
+UPDATED_README = "Updated README.md"
+UPDATED_FILE = "Updated package_name to {package_name} in {file_path} ✅"
 SETUP_COMPLETE = "{package_name} setup complete! 🎉🎉🎉\n"
 
 def make_name_safe(name:str) -> str:
-    """Makes a string safe to use as a package name.
-
-    Args:
-        name (str): The string to make safe.
-
-    Returns:
-        str: The safe string.
-
-    """
+    """Makes a string safe to use as a package name."""
     return name.lower().replace(' ', '_').replace('-', '_')
 
 
-def valid_file_predicate(file_path:str) -> bool:
-    """Checks if a file is valid for modification.
+def valid_file_predicate(file_path:Path) -> bool:
+    """Checks if a file is valid for modification."""
+    is_valid_extension = file_path.suffix not in [
+        # images
+        ".png",
+        ".jpg",
+        ".jpeg",
+    ]
+    not_ds_store = file_path.name != ".DS_Store"
+    not_this = file_path.name != Path(__file__).name
 
-    Args:
-        file_path (str): The path to the file to check.
-
-    Returns:
-        bool: Whether the file is valid for modification.
-
-    """
-    not_in_git = not file_path.startswith("./.git/")
-    not_image =  (
-        not file_path.endswith(".png")
-        and not file_path.endswith(".jpg")
-        and not file_path.endswith(".jpeg")
-    )
-    not_binary = not file_path.endswith(".DS_Store")
-    not_this = not file_path.endswith("project_setup.py")
-
-    return not_in_git and not_image and not_binary and not_this
-
-
-def get_repo_url(
-    user_provided_repo_url:str = "",
-) -> str:
-    """Gets the URL of the remote repository.
-
-    Args:
-        user_provided_repo_url (str, optional): The URL of the remote repository. Defaults to "".
-
-    Returns:
-        str: The URL of the remote repository.
-
-    """
-    url_guess = subprocess.check_output(
-        ['git', 'remote', 'get-url', 'origin']
-    ).decode().strip()
-
-    return user_provided_repo_url or url_guess
+    return is_valid_extension and not_ds_store and not_this
 
 
 def get_package_name(
     repo_url:str,
-    user_provided_package_name:str = "",
 ) -> str:
-    """Gets the package name from the user.
-
-    Guesses the package name from the repo URL.
-
-    Args:
-        repo_url (str): The URL of the remote repository.
-        user_provided_package_name (str, optional): The package name provided by the user. Defaults to "".
-
-    Returns:
-        str: The package name.
-    """
-    guessed_name = make_name_safe(Path(repo_url).stem)
-    return user_provided_package_name or guessed_name
+    """Guesses the package name from the repo URL."""
+    return make_name_safe(Path(repo_url).stem)
 
 
 def replace_file_contents(
-    new_str:str,
-    old_str:str,
-    file_path:str,
+    pairs_to_replace:List[Tuple[str, str]],
+    file_path:Path,
 ) -> bool:
-    """Replaces instances of `old_str` with `new_str` in file at file_path.
+    """Replaces the contents of a file.
 
-    Args:
-        old_str (str): The string to replace.
-        new_str (str): The string to replace `old_str` with.
-        file_path (str): The path to the file to modify.
+    pairs_to_replace (List[Tuple[str, str]]): A list of tuples where the first
+        element is the string to replace and the second element is the new string
+    file_path (Path): The path to the file to modify
 
     Returns:
-        None
+        bool: True if the file was modified, False otherwise
     """
     with open(file_path, "r") as f:
         content = f.read()
 
-    new_content = content.replace(old_str, new_str)
+    new_content = functools.reduce(lambda x, y: x.replace(*y), pairs_to_replace, content)
 
     if new_content != content:
         with open(file_path, "w") as f:
@@ -149,51 +71,55 @@ def replace_file_contents(
 
 
 def self_destruct() -> None:
-    """Deletes this file."""
+    """Deletes this file and its tests."""
     os.remove(__file__)
+    os.remove("tests/test_project_setup.py")
 
 
 def rtd_project_guess(
     repo_url:str,
-    user_provided_rtd_name:str = "",
 ) -> str:
     """Guesses the RTD project name from the repo URL."""
-    return user_provided_rtd_name or Path(repo_url).stem
+    return Path(repo_url).stem
 
 
 def codecov_project_guess(
     repo_url:str,
-    user_provided_codecov_name:str = "",
 ) -> str:
     """Guesses the codecov project name from the repo URL."""
-    guess = "/".join(Path(repo_url).parts[-2:]).replace(".git", "")
-    return user_provided_codecov_name or guess
+    return "/".join(Path(repo_url).parts[-2:]).replace(".git", "")
 
 
 def run_setup(
     repo_url:str,
     package_name:str,
-    dir_path:str = ".",
-    input_func:Callable[[Optional[str]], str] = input,
+    dir_path:Path = Path("."),
     output_func:Callable[[str], None] = print,
 ) -> None:
+
     # Update pyproject.toml and README.md, which contain the repo URL===========
     rtd_guess = rtd_project_guess(repo_url)
     codecov_guess = codecov_project_guess(repo_url)
 
-    replace_args = zip(
-        [repo_url, repo_url, rtd_guess, codecov_guess],
-        [TEMPLATE_REPO_URL, TEMPLATE_REPO_URL,  "ssec-jhu-base-template", "ssec-jhu/base-template"],
-        map(lambda f: os.path.join(dir_path, f), ["pyproject.toml", "README.md", "README.md", "README.md"]),
-        [UPDATED_PYPROJECT_TOML, UPDATED_README_CICD, UPDATED_README_RTD, UPDATED_README_CODECOV]
-    )
+    pyproject_toml_replacement_pairs = [
+        (TEMPLATE_REPO_URL, repo_url),
+    ]
+    if replace_file_contents(
+        pyproject_toml_replacement_pairs,
+        dir_path / Path("pyproject.toml"),
+    ):
+        output_func(UPDATED_PYPROJECT_TOML + "✅")
 
-    for new_str, old_str, file_path, msg in replace_args:
-        if replace_file_contents(new_str, old_str, file_path):
-            output_func(msg + "✅")
-        else:
-            output_func(msg + "❌")
-    # ==========================================================================
+    readme_replacement_pairs = [
+        (TEMPLATE_REPO_URL, repo_url),
+        (TEMPLATE_RTD, rtd_guess),
+        (TEMPLATE_CODECOV, codecov_guess),
+    ]
+    if replace_file_contents(
+        readme_replacement_pairs,
+        dir_path / Path("README.md"),
+    ):
+        output_func(UPDATED_README + "✅")
 
 
     # Update occurences of the package name in the project======================
@@ -202,39 +128,38 @@ def run_setup(
     # brackted version becaused replacing the unbracketed version will also
     # replace the bracketed version, but not vice versa.
 
-    # update the top_level app name dir:
-    os.rename(
-        os.path.join(dir_path, TEMPLATE_PACKAGE_NAME),
-        os.path.join(dir_path, package_name)
-    )
-
-    # get all files with paths in the repo directory
-    dir_file_pairs = itertools.chain.from_iterable(map(
-        lambda walk_tup: zip(itertools.repeat(walk_tup[0]), walk_tup[2]), # we want the path and filename
-        os.walk(dir_path) # yields a tuple (dirpath:str, dirnames, filenames: List[str])
-    ))
+    # use git to move to preserve the git history
+    git.Repo().git.mv(TEMPLATE_PACKAGE_NAME, package_name)
 
     # filter out files that we don't want to modify
     files_to_check = list(filter(
         valid_file_predicate,
-        map(lambda x: os.path.join(*x), dir_file_pairs)
+        git.Repo().git.ls_tree("-r", "--name-only", "HEAD").split("\n"),
     ))
 
     # order matters, replace the bracketed version first
-    for template_name in ["<" + TEMPLATE_PACKAGE_NAME + ">", TEMPLATE_PACKAGE_NAME]:
-        for file_path in files_to_check:
-            # only print positive results
-            if replace_file_contents(package_name, template_name, file_path):
-                output_func(UPDATED_FILE.format(template_name=template_name, package_name=package_name, file_path=file_path))
-    # ==========================================================================
+    package_name_replacement_pairs = [
+        ("<" + TEMPLATE_PACKAGE_NAME + ">", package_name),
+        (TEMPLATE_PACKAGE_NAME, package_name),
+    ]
+    for file_path in files_to_check:
+        # only print positive results
+        if replace_file_contents(package_name_replacement_pairs, file_path):
+            output_func(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
 
-    self_destruct(input_func)
+    # self_destruct()
 
     output_func(SETUP_COMPLETE.format(package_name=package_name))
 
 
 if __name__ == '__main__':
-    with open(".git/config", "r") as f:
-        repo_url = get_repo_url(f).replace(".git", "")
+    arguments = argparse.ArgumentParser()
+    arguments.add_argument("--repo_url", type=str, default="")
+    arguments.add_argument("--package_name", type=str, default="")
+
+    repo_url = git.Repo().remotes.origin.url
     package_name = get_package_name(repo_url)
-    run_setup(repo_url=repo_url, package_name=package_name)
+    run_setup(
+        repo_url=repo_url,
+        package_name=package_name
+    )

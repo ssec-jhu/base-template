@@ -134,7 +134,7 @@ def run_setup(
     # filter out files that we don't want to modify
     files_to_check = list(filter(
         valid_file_predicate,
-        git.Repo().git.ls_tree("-r", "--name-only", "HEAD").split("\n"),
+        map(Path, git.Repo().git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
     ))
 
     # order matters, replace the bracketed version first

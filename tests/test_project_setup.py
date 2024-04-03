@@ -155,7 +155,7 @@ def test_run_setup(repo_url:str, package_name:str):
     with open("README.md", "r") as f:
         actual_readme = f.read()
 
-    with open(f"{package_name}/app/main.py", "r") as f:
+    with open(f"{package_name}/__init__.py", "r") as f:
         actual_app = f.read()
 
     with open(f"{package_name}/util.py", "r") as f:

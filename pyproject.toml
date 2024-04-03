@@ -54,6 +54,15 @@ exclude_dirs = ["tests"]
 
 [tool.ruff]
 line-length = 120
+lint.select = ["ALL"]
+lint.ignore = [
+    "ANN",
+    "PLR0913",
+    "EM101",
+    "EM102",
+    "TRY003",
+    "D407",
+]
 exclude = [
     ".bzr",
     ".direnv",
@@ -78,8 +87,17 @@ exclude = [
     "venv",
     "_version.py"
 ]
+target-version = "py311"
 
-lint.ignore = [
+[tool.ruff.lint.per-file-ignores]
+"**/test{s,}/*.py" = [
+     "S101",
+    "D",
+    "ARG001",
+    "INP",
 ]
 
-target-version = "py311"
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"

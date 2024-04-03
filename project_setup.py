@@ -156,9 +156,10 @@ if __name__ == '__main__':
     arguments = argparse.ArgumentParser()
     arguments.add_argument("--repo_url", type=str, default="")
     arguments.add_argument("--package_name", type=str, default="")
+    arguments.parse_args()
 
-    repo_url = git.Repo().remotes.origin.url
-    package_name = get_package_name(repo_url)
+    repo_url = arguments.repo_url or git.Repo().remotes.origin.url
+    package_name = arguments.package_name or get_package_name(repo_url)
     run_setup(
         repo_url=repo_url,
         package_name=package_name

@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
-import shutil
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
 
 # this is GitPython
 import git

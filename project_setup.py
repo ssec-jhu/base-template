@@ -3,7 +3,7 @@ import argparse
 import functools
 import os
 from pathlib import Path
-from typing import Callable, List, Tuple
+from typing import List, Tuple
 
 # this is GitPython
 import git

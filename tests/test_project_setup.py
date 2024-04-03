@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 from typing import List, Tuple
 
@@ -163,7 +164,7 @@ def test_run_setup(repo_url:str, package_name:str):
 
     # undo the two commits done by run_setup
     git.Repo().git.reset("--hard", "HEAD~2")
-    git.Repo().git.clean("-f", "-d", "-x")
+    shutil.rmtree(package_name)
 
     # check pyproject.toml
     assert template_url not in actual_pyproject

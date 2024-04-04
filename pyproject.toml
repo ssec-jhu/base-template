@@ -56,12 +56,12 @@ exclude_dirs = ["tests"]
 line-length = 120
 lint.select = ["ALL"]
 lint.ignore = [
-    "ANN",
-    "PLR0913",
-    "EM101",
-    "EM102",
-    "TRY003",
-    "D407",
+    "ANN",  # https://docs.astral.sh/ruff/rules/#flake8-annotations-ann
+    "PLR0913",  # https://docs.astral.sh/ruff/rules/too-many-arguments/
+    "EM101",  # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
+    "EM102",  # https://docs.astral.sh/ruff/rules/f-string-in-exception/
+    "TRY003",  # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
+    "D407",  # https://docs.astral.sh/ruff/rules/dashed-underline-after-section/
 ]
 exclude = [
     ".bzr",
@@ -91,13 +91,13 @@ target-version = "py311"
 
 [tool.ruff.lint.per-file-ignores]
 "**/test{s,}/*.py" = [
-     "S101",
-    "D",
-    "ARG001",
-    "INP",
+    "S101",  # https://docs.astral.sh/ruff/rules/assert/
+    "D",  # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+    "ARG001",  # https://docs.astral.sh/ruff/rules/unused-function-argument/
+    "INP",  # https://docs.astral.sh/ruff/rules/#flake8-no-pep420-inp
 ]
 
-[tool.ruff.flake8-quotes]
-docstring-quotes = "double"
-inline-quotes = "single"
-multiline-quotes = "double"
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_docstring-quotes
+inline-quotes = "single"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_inline-quotes
+multiline-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_multiline-quotes

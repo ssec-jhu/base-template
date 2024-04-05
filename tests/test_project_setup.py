@@ -142,7 +142,25 @@ def test_codecov_project_guess(repo_url:str, expected:str):
 ])
 def test_run_setup(repo_url:str, package_name:str):
 
+
+    # this file gets deleted by self_destruct
+    with open("project_setup.py", "r") as f:
+        project_setup_py = f.read()
+
+    # this file gets deleted by self_destruct
+    with open("tests/test_project_setup.py", "r") as f:
+        test_project_setup_py = f.read()
+
     ps.run_setup(repo_url, package_name)
+
+    project_setup_py_exists = os.path.exists("project_setup.py")
+    test_project_setup_py_exists = os.path.exists("tests/test_project_setup.py")
+
+    with open("project_setup.py", "w") as f:
+        f.write(project_setup_py)
+
+    with open("tests/test_project_setup.py", "w") as f:
+        f.write(test_project_setup_py)
 
     template_package_name = ps.TEMPLATE_PACKAGE_NAME
     template_url = ps.TEMPLATE_REPO_URL
@@ -165,6 +183,11 @@ def test_run_setup(repo_url:str, package_name:str):
     # don't fail. `python -m build`` adds a file called _verion.py
     # which doesn't exist in source control and won't survive a reset.
     git.Repo().mv(package_name, template_package_name)
+    # git.Repo().git.reset("--hard", "HEAD~2")
+
+    # check file removal
+    assert not project_setup_py_exists
+    assert not test_project_setup_py_exists
 
     # check pyproject.toml
     assert template_url not in actual_pyproject

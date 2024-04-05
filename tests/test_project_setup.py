@@ -182,7 +182,7 @@ def test_run_setup(repo_url:str, package_name:str):
     # move the package back so that the tests in tests/test_util.py
     # don't fail. `python -m build`` adds a file called _verion.py
     # which doesn't exist in source control and won't survive a reset.
-    git.Repo().mv(package_name, template_package_name)
+    git.Repo().git.mv(package_name, template_package_name)
     # git.Repo().git.reset("--hard", "HEAD~2")
 
     # check file removal

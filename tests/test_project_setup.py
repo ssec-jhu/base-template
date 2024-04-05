@@ -137,54 +137,55 @@ def test_codecov_project_guess(repo_url:str, expected:str):
     assert ps.codecov_project_guess(repo_url) == expected
 
 
-# @pytest.mark.parametrize(
-#     "repo_url, package_name", [
-#     ("https://www.github.com/good-org/amazing-project.git", "amazing_project"),
-# ])
-# def test_run_setup(repo_url:str, package_name:str):
+@pytest.mark.parametrize(
+    "repo_url, package_name", [
+    ("https://www.github.com/good-org/amazing-project.git", "amazing_project"),
+])
+def test_run_setup(repo_url:str, package_name:str):
 
-#     ps.run_setup(repo_url, package_name)
+    ps.run_setup(repo_url, package_name)
 
-#     template_package_name = ps.TEMPLATE_PACKAGE_NAME
-#     template_url = ps.TEMPLATE_REPO_URL
+    template_package_name = ps.TEMPLATE_PACKAGE_NAME
+    template_url = ps.TEMPLATE_REPO_URL
 
-#     # open pyproject.toml
-#     with open("pyproject.toml", "r") as f:
-#         actual_pyproject = f.read()
+    # open pyproject.toml
+    with open("pyproject.toml", "r") as f:
+        actual_pyproject = f.read()
 
-#     # open README.md
-#     with open("README.md", "r") as f:
-#         actual_readme = f.read()
+    # open README.md
+    with open("README.md", "r") as f:
+        actual_readme = f.read()
 
-#     with open(f"{package_name}/__init__.py", "r") as f:
-#         actual_app = f.read()
+    with open(f"{package_name}/__init__.py", "r") as f:
+        actual_app = f.read()
 
-#     with open(f"{package_name}/util.py", "r") as f:
-#         actual_util = f.read()
+    with open(f"{package_name}/util.py", "r") as f:
+        actual_util = f.read()
 
-#     # undo the two commits done by run_setup
-#     git.Repo().git.reset("--hard", "HEAD~2")
-#     shutil.rmtree(package_name)
+    # move the package back so that the tests in tests/test_util.py
+    # don't fail. `python -m build`` adds a file called _verion.py
+    # which doesn't exist in source control and won't survive a reset.
+    git.Repo().mv(package_name, template_package_name)
 
-#     # check pyproject.toml
-#     assert template_url not in actual_pyproject
-#     assert template_package_name not in actual_pyproject
-#     assert package_name in actual_pyproject
-#     assert repo_url in actual_pyproject
+    # check pyproject.toml
+    assert template_url not in actual_pyproject
+    assert template_package_name not in actual_pyproject
+    assert package_name in actual_pyproject
+    assert repo_url in actual_pyproject
 
-#     # check README.md
-#     assert template_url not in actual_readme
-#     assert template_package_name not in actual_readme
-#     assert package_name in actual_readme
-#     assert repo_url in actual_readme
-#     assert ps.codecov_project_guess(repo_url) in actual_readme
-#     assert ps.rtd_project_guess(repo_url) in actual_readme
+    # check README.md
+    assert template_url not in actual_readme
+    assert template_package_name not in actual_readme
+    assert package_name in actual_readme
+    assert repo_url in actual_readme
+    assert ps.codecov_project_guess(repo_url) in actual_readme
+    assert ps.rtd_project_guess(repo_url) in actual_readme
 
-#     # check the app.py
-#     assert template_package_name not in actual_app
-#     assert package_name in actual_app
+    # check the app.py
+    assert template_package_name not in actual_app
+    assert package_name in actual_app
 
-#     # check the other.py
-#     assert template_package_name not in actual_util
-#     assert package_name not in actual_util
+    # check the other.py
+    assert template_package_name not in actual_util
+    assert package_name not in actual_util
 

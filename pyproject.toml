@@ -56,7 +56,11 @@ exclude_dirs = ["tests"]
 line-length = 120
 lint.select = ["ALL"]
 lint.ignore = [
-    "ANN",  # https://docs.astral.sh/ruff/rules/#flake8-annotations-ann
+    "ANN002",  # https://docs.astral.sh/ruff/rules/missing-type-args/
+    "ANN003",  # https://docs.astral.sh/ruff/rules/missing-type-kwargs/
+    "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-self/
+    "ANN102",  # https://docs.astral.sh/ruff/rules/missing-type-cls/
+    "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
     "PLR0913",  # https://docs.astral.sh/ruff/rules/too-many-arguments/
     "EM101",  # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
     "EM102",  # https://docs.astral.sh/ruff/rules/f-string-in-exception/
@@ -95,6 +99,7 @@ target-version = "py311"
     "D",  # https://docs.astral.sh/ruff/rules/#pydocstyle-d
     "ARG001",  # https://docs.astral.sh/ruff/rules/unused-function-argument/
     "INP",  # https://docs.astral.sh/ruff/rules/#flake8-no-pep420-inp
+    "ANN",  # https://docs.astral.sh/ruff/rules/#flake8-annotations-ann
 ]
 
 [tool.ruff.lint.flake8-quotes]

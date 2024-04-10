@@ -13,13 +13,10 @@ Base repo template to be used by all others.
 
 Things to do when using this template:
 
- * Correct ```<package_name>``` for child repo - suggest doing a search-all (grep) "package_name".
+ * Run ```python project_setup.py```
  * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
  * Correct "description" field in .zenodo.json to reflect description of child repo.
- * Correct the ``CI Status`` badge with child repo name.
- * Correct CodeCov status badge.
- * Correct meta data in ``CITATION.cff``.
- * Correct ``homepage``, ``documentation``, and ``repository`` under ``[project.urls]`` in pyproject.toml
+ * Correct the ``CI Status`` badge with the correct token in the URL.
  * Import package into https://readthedocs.org/.
 
 What's included in this template:

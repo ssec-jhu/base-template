@@ -13,8 +13,8 @@ TEMPLATE_REPO_URL = "https://github.com/ssec-jhu/base-template"
 TEMPLATE_RTD = "ssec-jhu-base-template"
 TEMPLATE_CODECOV = "ssec-jhu/base-template"
 
-UPDATED_PYPROJECT_TOML = "pyproject.toml [project.urls]"
-UPDATED_README = "Updated README.md"
+UPDATED_PYPROJECT_TOML = "pyproject.toml [project.urls] ✅"
+UPDATED_README = "Updated README.md ✅, but you need to add a token to the codecov badge!"
 UPDATED_DIR = "Renamed {old_dir} to {new_dir} ✅"
 UPDATED_FILE = "Updated package_name to {package_name} in {file_path} ✅"
 SETUP_COMPLETE = "{package_name} setup complete! 🎉🎉🎉\n"
@@ -96,8 +96,24 @@ def run_setup(
     package_name:str,
     repo:git.Repo = git.Repo(),
 ) -> None:
+    """Helper to setup a new project based on this template.
 
-    # Update pyproject.toml and README.md, which contain the repo URL===========
+    It does the following things:
+    1. Updates the pyproject.toml and README.md files
+    2. Renames the package_name directory to a python safe version of the
+       repo name
+    3. Updates the package_name and <package_name> in all files to a python safe
+       version of the repo name
+
+    Args:
+        repo_url (str): The URL of the repo
+        package_name (str): The name of the package
+        repo (git.Repo): The git repo to use
+
+    Returns:
+        None
+    """
+    # Step 1: Update the pyproject.toml and README.md ==========================
     rtd_guess = rtd_project_guess(repo_url)
     codecov_guess = codecov_project_guess(repo_url)
 
@@ -108,7 +124,7 @@ def run_setup(
         pyproject_toml_replacement_pairs,
         Path(repo.working_dir) / Path("pyproject.toml"),
     ):
-        print(UPDATED_PYPROJECT_TOML + "✅")
+        print(UPDATED_PYPROJECT_TOML)
 
     readme_replacement_pairs = [
         (TEMPLATE_REPO_URL, repo_url),
@@ -119,19 +135,14 @@ def run_setup(
         readme_replacement_pairs,
         Path(repo.working_dir) / Path("README.md"),
     ):
-        print(UPDATED_README + "✅")
+        print(UPDATED_README)
 
-
-    # Update occurences of the package name in the project======================
-    # Sometimes the template package name is referred to using `package_name`
-    # and other times it is referred to by `<package_name>`. First replace the
-    # brackted version becaused replacing the unbracketed version will also
-    # replace the bracketed version, but not vice versa.
-
-    # use git to move to preserve the git history
+    # Step 2: Rename the package_name directory ================================
     repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
     repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
     print(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
+
+    # Step 3: Update the package_name and <package_name> in all files ==========
 
     # filter out files that we don't want to modify
     files_to_check = list(filter(

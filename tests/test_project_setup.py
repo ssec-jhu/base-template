@@ -146,9 +146,14 @@ def test_run_setup(repo_url:str, package_name:str, tmp_path):
     def with_tmp(f):
         return tmp_path / f
 
-    shutil.copytree(os.getcwd(), with_tmp(""), dirs_exist_ok=True)
+    shutil.copytree(os.getcwd(), tmp_path, dirs_exist_ok=True)
 
-    ps.run_setup(repo_url, package_name, git.Repo(with_tmp("")))
+    repo = git.Repo(tmp_path)
+    #sign in to the repo
+    repo.git.config("user.email", "ssec@jhu.edu")
+    repo.git.config("user.name", "ssec")
+
+    ps.run_setup(repo_url, package_name, repo)
 
     project_setup_py_exists = os.path.exists(with_tmp("project_setup.py"))
     test_project_setup_py_exists = os.path.exists(with_tmp("tests/test_project_setup.py"))

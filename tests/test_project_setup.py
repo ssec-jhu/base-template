@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import shutil
 from typing import List, Tuple
 
 # this is GitPython
@@ -140,50 +141,34 @@ def test_codecov_project_guess(repo_url:str, expected:str):
     "repo_url, package_name", [
     ("https://www.github.com/good-org/amazing-project.git", "amazing_project"),
 ])
-def test_run_setup(repo_url:str, package_name:str):
+def test_run_setup(repo_url:str, package_name:str, tmp_path):
 
+    def with_tmp(f):
+        return tmp_path / f
 
-    # this file gets deleted by self_destruct
-    with open("project_setup.py", "r") as f:
-        project_setup_py = f.read()
+    shutil.copytree(os.getcwd(), with_tmp(""), dirs_exist_ok=True)
 
-    # this file gets deleted by self_destruct
-    with open("tests/test_project_setup.py", "r") as f:
-        test_project_setup_py = f.read()
+    ps.run_setup(repo_url, package_name, git.Repo(with_tmp("")))
 
-    ps.run_setup(repo_url, package_name)
-
-    project_setup_py_exists = os.path.exists("project_setup.py")
-    test_project_setup_py_exists = os.path.exists("tests/test_project_setup.py")
-
-    with open("project_setup.py", "w") as f:
-        f.write(project_setup_py)
-
-    with open("tests/test_project_setup.py", "w") as f:
-        f.write(test_project_setup_py)
+    project_setup_py_exists = os.path.exists(with_tmp("project_setup.py"))
+    test_project_setup_py_exists = os.path.exists(with_tmp("tests/test_project_setup.py"))
 
     template_package_name = ps.TEMPLATE_PACKAGE_NAME
     template_url = ps.TEMPLATE_REPO_URL
 
     # open pyproject.toml
-    with open("pyproject.toml", "r") as f:
+    with open(with_tmp("pyproject.toml"), "r") as f:
         actual_pyproject = f.read()
 
     # open README.md
-    with open("README.md", "r") as f:
+    with open(with_tmp("README.md"), "r") as f:
         actual_readme = f.read()
 
-    with open(f"{package_name}/__init__.py", "r") as f:
+    with open(with_tmp(f"{package_name}/__init__.py"), "r") as f:
         actual_app = f.read()
 
-    with open(f"{package_name}/util.py", "r") as f:
+    with open(with_tmp(f"{package_name}/util.py"), "r") as f:
         actual_util = f.read()
-
-    # move the package back so that the tests in tests/test_util.py
-    # don't fail. `python -m build`` adds a file called _verion.py
-    # which doesn't exist in source control and won't survive a reset.
-    git.Repo().git.mv(package_name, template_package_name)
-    # git.Repo().git.reset("--hard", "HEAD~2")
 
     # check file removal
     assert not project_setup_py_exists

@@ -71,10 +71,10 @@ def replace_file_contents(
     return False
 
 
-def self_destruct() -> None:
+def self_destruct(parent_dir:Path = Path(".")) -> None:
     """Deletes this file and its tests."""
-    os.remove(__file__)
-    os.remove("tests/test_project_setup.py")
+    os.remove(parent_dir / Path(__file__).name)
+    os.remove(parent_dir / Path("tests/test_project_setup.py"))
 
 
 def rtd_project_guess(
@@ -94,6 +94,7 @@ def codecov_project_guess(
 def run_setup(
     repo_url:str,
     package_name:str,
+    repo:git.Repo = git.Repo(),
 ) -> None:
 
     # Update pyproject.toml and README.md, which contain the repo URL===========
@@ -105,7 +106,7 @@ def run_setup(
     ]
     if replace_file_contents(
         pyproject_toml_replacement_pairs,
-        Path("pyproject.toml"),
+        Path(repo.working_dir) / Path("pyproject.toml"),
     ):
         print(UPDATED_PYPROJECT_TOML + "✅")
 
@@ -116,7 +117,7 @@ def run_setup(
     ]
     if replace_file_contents(
         readme_replacement_pairs,
-        Path("README.md"),
+        Path(repo.working_dir) / Path("README.md"),
     ):
         print(UPDATED_README + "✅")
 
@@ -128,7 +129,6 @@ def run_setup(
     # replace the bracketed version, but not vice versa.
 
     # use git to move to preserve the git history
-    repo = git.Repo()
     repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
     repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
     print(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
@@ -136,7 +136,7 @@ def run_setup(
     # filter out files that we don't want to modify
     files_to_check = list(filter(
         valid_file_predicate,
-        map(Path, git.Repo().git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
+        map(lambda f: Path(repo.working_dir) / Path(f), repo.git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
     ))
 
     # order matters, replace the bracketed version first
@@ -149,7 +149,7 @@ def run_setup(
         if replace_file_contents(package_name_replacement_pairs, file_path):
             print(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
 
-    self_destruct()
+    self_destruct(Path(repo.working_dir))
 
     repo.git.commit("-am", f"updated package name to {package_name} in files")
 

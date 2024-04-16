@@ -5,7 +5,7 @@
 
 
 echo Running ruff linter tests...
-TEST_RESULTS=$(ruff .)
+TEST_RESULTS=$(tox -e check-style)
 RETURN_VALUE=$?
 if [ $RETURN_VALUE != 0 ]; then
   echo "$TEST_RESULTS"

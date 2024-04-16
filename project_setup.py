@@ -76,6 +76,15 @@ def self_destruct(parent_dir:Path = Path(".")) -> None:
     os.remove(parent_dir / Path(__file__).name)
     os.remove(parent_dir / Path("tests/test_project_setup.py"))
 
+    # remove the dependency on GitPython
+    for env in ["dev", "test"]:
+        with open(parent_dir / Path(f"requirements/{env}.txt"), "r") as f:
+            requirements = list(map(lambda l: l.strip(), f.readlines()))
+
+        requirements = list(filter(lambda x: "GitPython" not in x, requirements))
+        with open(parent_dir / Path(f"requirements/{env}.txt"), "w") as f:
+            f.write("\n".join(requirements))
+
 
 def rtd_project_guess(
     repo_url:str,

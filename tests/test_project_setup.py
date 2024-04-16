@@ -97,27 +97,25 @@ def test_replace_file_contents(
         assert file_contents == actual_contents
 
 
-def test_self_destruct():
-    with open("project_setup.py", "r") as f:
-        ps_contents = f.read()
+def test_self_destruct(tmp_path):
+    tmp_path = Path(tmp_path)
+    shutil.copytree(os.getcwd(), tmp_path, dirs_exist_ok=True)
+    ps.self_destruct(Path(tmp_path))
 
-    with open("tests/test_project_setup.py", "r") as f:
-        test_ps_contents = f.read()
+    # check if the files are removed
+    ps_exists = os.path.exists(tmp_path / Path("project_setup.py"))
+    ps_test_exists = os.path.exists(tmp_path / Path("tests/test_project_setup.py"))
 
-    ps.self_destruct()
-
-    ps_exists = os.path.exists("project_setup.py")
-    ps_test_exists = os.path.exists("tests/test_project_setup.py")
-
-    with open("project_setup.py", "w") as f:
-        f.write(ps_contents)
-
-    with open("tests/test_project_setup.py", "w") as f:
-        f.write(test_ps_contents)
+    # check if the dependencies are removed
+    with open(tmp_path / Path("requirements/dev.txt"), "r") as f:
+        dev_requirements = f.read()
+    with open(tmp_path / Path("requirements/test.txt"), "r") as f:
+        test_requirements = f.read()
 
     assert not ps_exists
     assert not ps_test_exists
-
+    assert "GitPython" not in dev_requirements
+    assert "GitPython" not in test_requirements
 
 @pytest.mark.parametrize(
     "repo_url, expected", [

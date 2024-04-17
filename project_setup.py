@@ -79,7 +79,7 @@ def self_destruct(parent_dir:Path = Path(".")) -> None:
     # remove the dependency on GitPython
     for env in ["dev", "test"]:
         with open(parent_dir / Path(f"requirements/{env}.txt"), "r") as f:
-            requirements = list(map(lambda l: l.strip(), f.readlines()))
+            requirements = list(map(lambda line: line.strip(), f.readlines()))
 
         requirements = list(filter(lambda x: "GitPython" not in x, requirements))
         with open(parent_dir / Path(f"requirements/{env}.txt"), "w") as f:
@@ -104,6 +104,7 @@ def run_setup(
     repo_url:str,
     package_name:str,
     repo:git.Repo = git.Repo(),
+    commit_as_you_go:bool = True,
 ) -> None:
     """Helper to setup a new project based on this template.
 
@@ -118,6 +119,7 @@ def run_setup(
         repo_url (str): The URL of the repo
         package_name (str): The name of the package
         repo (git.Repo): The git repo to use
+        commit_as_you_go (bool): Whether to commit after each step
 
     Returns:
         None
@@ -146,12 +148,16 @@ def run_setup(
     ):
         print(UPDATED_README)
 
-    # Step 2: Rename the package_name directory ================================
-    repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
-    repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
-    print(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
+    repo.git.commit(*list(filter(
+        lambda arg: len(arg) > 0,
+        [
+            "--dry-run" if not commit_as_you_go else "",
+            "-qam",
+            "updated pyproject.toml and README.md",
+        ]
+    )))
 
-    # Step 3: Update the package_name and <package_name> in all files ==========
+    # Step 2: Update the package_name in all files =============================
 
     # filter out files that we don't want to modify
     files_to_check = list(filter(
@@ -169,9 +175,33 @@ def run_setup(
         if replace_file_contents(package_name_replacement_pairs, file_path):
             print(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
 
+
+
+    # Step 3: Rename the package_name directory ================================
+    repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
+    repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
+    print(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
+
+    repo.git.commit(*list(filter(
+        lambda arg: len(arg) > 0,
+        [
+            "--dry-run" if not commit_as_you_go else "",
+            "-qam",
+            f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}",
+        ]
+    )))
+
+
     self_destruct(Path(repo.working_dir))
 
-    repo.git.commit("-am", f"updated package name to {package_name} in files")
+    repo.git.commit(*list(filter(
+        lambda arg: len(arg) > 0,
+        [
+            "--dry-run" if not commit_as_you_go else "",
+            "-qam",
+            f"removed base-template setup files",
+        ]
+    )))
 
     print(SETUP_COMPLETE.format(package_name=package_name))
 

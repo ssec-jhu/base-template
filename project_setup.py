@@ -124,6 +124,17 @@ def run_setup(
     Returns:
         None
     """
+    def commit_func(message:str) -> None:
+        repo.git.commit(*list(filter(
+            lambda arg: len(arg) > 0,
+            [
+                "--dry-run" if not commit_as_you_go else "",
+                "-qam",
+                message,
+            ]
+        )))
+
+
     # Step 1: Update the pyproject.toml and README.md ==========================
     rtd_guess = rtd_project_guess(repo_url)
     codecov_guess = codecov_project_guess(repo_url)
@@ -148,21 +159,16 @@ def run_setup(
     ):
         print(UPDATED_README)
 
-    repo.git.commit(*list(filter(
-        lambda arg: len(arg) > 0,
-        [
-            "--dry-run" if not commit_as_you_go else "",
-            "-qam",
-            "updated pyproject.toml and README.md",
-        ]
-    )))
+    commit_func("updated pyproject.toml and README.md")
 
     # Step 2: Update the package_name in all files =============================
 
     # filter out files that we don't want to modify
     files_to_check = list(filter(
         valid_file_predicate,
-        map(lambda f: Path(repo.working_dir) / Path(f), repo.git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
+        map(
+            lambda f: Path(repo.working_dir) / Path(f),
+            repo.git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
     ))
 
     # order matters, replace the bracketed version first
@@ -182,39 +188,40 @@ def run_setup(
     repo.git.commit("-m", f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
     print(UPDATED_DIR.format(old_dir=TEMPLATE_PACKAGE_NAME, new_dir=package_name))
 
-    repo.git.commit(*list(filter(
-        lambda arg: len(arg) > 0,
-        [
-            "--dry-run" if not commit_as_you_go else "",
-            "-qam",
-            f"renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}",
-        ]
-    )))
-
+    commit_func("renamed dir {TEMPLATE_PACKAGE_NAME} to {package_name}")
 
     self_destruct(Path(repo.working_dir))
 
-    repo.git.commit(*list(filter(
-        lambda arg: len(arg) > 0,
-        [
-            "--dry-run" if not commit_as_you_go else "",
-            "-qam",
-            f"removed base-template setup files",
-        ]
-    )))
+    commit_func("removed base-template setup files")
 
     print(SETUP_COMPLETE.format(package_name=package_name))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repo_url", type=str, default="")
-    parser.add_argument("--package_name", type=str, default="")
+    parser.add_argument(
+        "--repo_url",
+        type=str,
+        default="",
+        help="The URL of the repo, we get this from git, so you probably don't need to set this.",
+    )
+    parser.add_argument(
+        "--package_name",
+        type=str,
+        default="",
+        help="The name of the package, we guess this from the repo URL. If you want to override it, set it here.",
+    )
+    parser.add_argument(
+        "--commit_as_you_go",
+        action=argparse.BooleanOptionalAction,
+        help="Whether to commit after each step. Default is False.",
+    )
     arguments = parser.parse_args()
 
     repo_url = arguments.repo_url or git.Repo().remotes.origin.url
     package_name = arguments.package_name or get_package_name(repo_url)
     run_setup(
         repo_url=repo_url,
-        package_name=package_name
+        package_name=package_name,
+        commit_as_you_go=bool(arguments.commit_as_you_go),
     )

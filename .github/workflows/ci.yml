@@ -37,6 +37,31 @@ jobs:
         run: tox -e check-style
         shell: bash
 
+  format-check:
+    name: check format with ruff with Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements/dev.txt
+        shell: bash
+      - name: Check code formatting
+        run: tox -e format-code -- --check
+        shell: bash
+      - name: Check import formatting
+        run: tox -e format-imports -- --exit-non-zero-on-fix
+        shell: bash
+
   test:
     name: pytests on Python ${{ matrix.python-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

@@ -1,4 +1,5 @@
 """Helps setup a new project based on this template."""
+
 import argparse
 import functools
 import os
@@ -19,12 +20,13 @@ UPDATED_DIR = "Renamed {old_dir} to {new_dir} ✅"
 UPDATED_FILE = "Updated package_name to {package_name} in {file_path} ✅"
 SETUP_COMPLETE = "{package_name} setup complete! 🎉🎉🎉\n"
 
-def make_name_safe(name:str) -> str:
+
+def make_name_safe(name: str) -> str:
     """Makes a string safe to use as a package name."""
-    return name.lower().replace(' ', '_').replace('-', '_')
+    return name.lower().replace(" ", "_").replace("-", "_")
 
 
-def valid_file_predicate(file_path:Path) -> bool:
+def valid_file_predicate(file_path: Path) -> bool:
     """Checks if a file is valid for modification."""
     is_valid_extension = file_path.suffix not in [
         # images
@@ -39,15 +41,15 @@ def valid_file_predicate(file_path:Path) -> bool:
 
 
 def get_package_name(
-    repo_url:str,
+    repo_url: str,
 ) -> str:
     """Guesses the package name from the repo URL."""
     return make_name_safe(Path(repo_url).stem)
 
 
 def replace_file_contents(
-    pairs_to_replace:List[Tuple[str, str]],
-    file_path:Path,
+    pairs_to_replace: List[Tuple[str, str]],
+    file_path: Path,
 ) -> bool:
     """Replaces the contents of a file.
 
@@ -71,7 +73,7 @@ def replace_file_contents(
     return False
 
 
-def self_destruct(parent_dir:Path = Path(".")) -> None:
+def self_destruct(parent_dir: Path = Path(".")) -> None:
     """Deletes this file and its tests."""
     os.remove(parent_dir / Path(__file__).name)
     os.remove(parent_dir / Path("tests/test_project_setup.py"))
@@ -87,24 +89,24 @@ def self_destruct(parent_dir:Path = Path(".")) -> None:
 
 
 def rtd_project_guess(
-    repo_url:str,
+    repo_url: str,
 ) -> str:
     """Guesses the RTD project name from the repo URL."""
     return Path(repo_url).stem
 
 
 def codecov_project_guess(
-    repo_url:str,
+    repo_url: str,
 ) -> str:
     """Guesses the codecov project name from the repo URL."""
     return "/".join(Path(repo_url).parts[-2:]).replace(".git", "")
 
 
 def run_setup(
-    repo_url:str,
-    package_name:str,
-    repo:git.Repo = git.Repo(),
-    commit_as_you_go:bool = True,
+    repo_url: str,
+    package_name: str,
+    repo: git.Repo = git.Repo(),
+    commit_as_you_go: bool = True,
 ) -> None:
     """Helper to setup a new project based on this template.
 
@@ -124,16 +126,20 @@ def run_setup(
     Returns:
         None
     """
-    def commit_func(message:str) -> None:
-        repo.git.commit(*list(filter(
-            lambda arg: len(arg) > 0,
-            [
-                "--dry-run" if not commit_as_you_go else "",
-                "-qam",
-                message,
-            ]
-        )))
 
+    def commit_func(message: str) -> None:
+        repo.git.commit(
+            *list(
+                filter(
+                    lambda arg: len(arg) > 0,
+                    [
+                        "--dry-run" if not commit_as_you_go else "",
+                        "-qam",
+                        message,
+                    ],
+                )
+            )
+        )
 
     # Step 1: Update the pyproject.toml and README.md ==========================
     rtd_guess = rtd_project_guess(repo_url)
@@ -164,12 +170,12 @@ def run_setup(
     # Step 2: Update the package_name in all files =============================
 
     # filter out files that we don't want to modify
-    files_to_check = list(filter(
-        valid_file_predicate,
-        map(
-            lambda f: Path(repo.working_dir) / Path(f),
-            repo.git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
-    ))
+    files_to_check = list(
+        filter(
+            valid_file_predicate,
+            map(lambda f: Path(repo.working_dir) / Path(f), repo.git.ls_tree("-r", "--name-only", "HEAD").split("\n")),
+        )
+    )
 
     # order matters, replace the bracketed version first
     package_name_replacement_pairs = [
@@ -180,8 +186,6 @@ def run_setup(
         # only print positive results
         if replace_file_contents(package_name_replacement_pairs, file_path):
             print(UPDATED_FILE.format(package_name=package_name, file_path=file_path))
-
-
 
     # Step 3: Rename the package_name directory ================================
     repo.git.mv(TEMPLATE_PACKAGE_NAME, package_name)
@@ -197,7 +201,7 @@ def run_setup(
     print(SETUP_COMPLETE.format(package_name=package_name))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--repo_url",

@@ -1,7 +1,6 @@
-from pathlib import Path
-
 import importlib
 import os
+from pathlib import Path
 
 from . import __project__  # Keep as relative for templating reasons.
 

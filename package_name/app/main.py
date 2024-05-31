@@ -8,7 +8,7 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return RedirectResponse(url='/docs')
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/healthz")

@@ -3,6 +3,15 @@
 # To use this githook copy this file to .git/hooks (in repo root dir)
 # The file permissions may need changing using ``chmod +x .git/hooks/pre-push``
 
+echo Running formatter...
+TEST_RESULTS=$(tox -e format)
+RETURN_VALUE=$?
+if [ $RETURN_VALUE != 0 ]; then
+  echo "$TEST_RESULTS"
+  exit 1
+fi
+echo Finished
+exit 0
 
 echo Running ruff linter tests...
 TEST_RESULTS=$(tox -e check-style)

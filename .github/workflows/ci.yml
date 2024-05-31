@@ -16,7 +16,7 @@ env:
 
 jobs:
   lint:
-    name: lint and check style with ruff with Python ${{ matrix.python-version }}
+    name: lint with ruff with Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -2,8 +2,23 @@
     "creators": [
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
-            "name": "James Noss",
-            "orcid": "0000-0002-0922-5770"
+            "name": "Fatemeh Abbasinejad",
+            "orcid": "0009-0006-3239-7112"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Samuel Carliles",
+            "orcid": "0000-0003-0273-9776"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Xiang Chen",
+            "orcid": "0009-0003-6402-9822"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Ryan Hausen",
+            "orcid": "0000-0002-8543-761X"
         },
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
@@ -27,13 +42,8 @@
         },
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
-            "name": "Xiang Chen",
-            "orcid": "0009-0003-6402-9822"
-        },
-        {
-            "affiliation": "Scientific Software Engineering Center at JHU",
-            "name": "Fatemeh Abbasinejad",
-            "orcid": "0009-0006-3239-7112"
+            "name": "James Noss",
+            "orcid": "0000-0002-0922-5770"
         }
     ],
     "description": "Accelerating Software Development for Science Research",

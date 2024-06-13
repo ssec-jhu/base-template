@@ -42,9 +42,13 @@ requires = ["setuptools>=61.2", "setuptools_scm[toml]>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["package_name"]  # Replace package_name with actual name (it's just a template).
 zip-safe = false
 include-package-data = true
+exclude-package-data = {"*" = ["tests/*"]}
+
+[tool.setuptools.packages.find]
+include = ["package_name*"]
+exclude = ["*.tests*"]
 
 [tool.setuptools_scm]
 write_to = "package_name/_version.py"  # Replace package_name with actual name (it's just a template).

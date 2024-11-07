@@ -51,6 +51,9 @@
             "orcid": "0000-0002-0922-5770"
         }
     ],
+    "references": [
+        "https://github.com/ssec-jhu/base-template 10.5281/zenodo.14052740."
+    ],
     "description": "Accelerating Software Development for Science Research",
     "license": "other-open",
     "upload_type": "software",

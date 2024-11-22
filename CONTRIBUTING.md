@@ -19,8 +19,8 @@ Thank you for your interest in contributing to package_name! As a contributor, y
 3. **Clone Your Fork Locally**:
    - Once your fork is created, you can clone it to your local machine to start working:
    ```bash
-   git clone https://github.com/your-username/package_name.git
-   cd package_name
+   git clone https://github.com/your-username/base-template
+   cd <repo dir>
    ```
 
 You now have your own copy (fork) of the repository where you can make changes independently from the main repository. When you’re ready to contribute back, you can create a pull request from your fork to the main repository.

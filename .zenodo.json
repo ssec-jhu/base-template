@@ -23,7 +23,7 @@
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
             "name": "Edward Hunter",
-            "orcid": "0000-0002-6876-001X"
+            "orcid": "0000-0002-6876-001X",
         },
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
@@ -33,12 +33,17 @@
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
             "name": "Gerard Lemson",
-            "orcid": "0000-0001-5041-2458"
+            "orcid": "0000-0001-5041-2458",
         },
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
             "name": "Iain Maitland",
             "orcid": "0009-0008-3831-1927"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Galen Mayfield",
+            "orcid": "0009-0009-6192-8623",
         },
         {
             "affiliation": "Scientific Software Engineering Center at JHU",
@@ -51,8 +56,28 @@
             "orcid": "0000-0002-0922-5770"
         }
     ],
+    "contributors": [
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "Jane Doe",
+            "orcid": "0000-0000-0000-0000",
+            "type": "ProjectManager"
+        },
+        {
+            "affiliation": "Scientific Software Engineering Center at JHU",
+            "name": "John Doe",
+            "orcid": "0000-0000-0000-0000",
+            "type": "Sponsor"
+        }
+    ],
+    "grants": [
+        {"": ""}
+    ],
+    "references": [
+        "https://github.com/ssec-jhu/base-template 10.5281/zenodo.14052740."
+    ],
     "description": "Accelerating Software Development for Science Research",
-    "license": "other-open",
+    "license": "bsd-3-clause",
     "upload_type": "software",
     "access_right": "open"
 }

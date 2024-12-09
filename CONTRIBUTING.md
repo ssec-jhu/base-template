@@ -94,6 +94,11 @@ If you encounter issues or have questions, feel free to open an issue on GitHub.
 
 By contributing, you agree that your contributions will be licensed under the same open-source license as the project.
 
+## Authorship
+
+Thank you for contributing to this repo! If you would like to be cited as an author/contributor of this project please
+open a PR adding yourself to the [.zenodo.json file](.zenodo.json) along with your [ORCID ID](https://orcid.org/).
+
 ---
 
 Thank you for your contributions to package_name! We’re excited to work with you.

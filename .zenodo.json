@@ -77,7 +77,7 @@
         "https://github.com/ssec-jhu/base-template 10.5281/zenodo.14052740."
     ],
     "description": "Accelerating Software Development for Science Research",
-    "license": "other-open",
+    "license": "bsd-3-clause",
     "upload_type": "software",
     "access_right": "open"
 }

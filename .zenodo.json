@@ -56,23 +56,6 @@
             "orcid": "0000-0002-0922-5770"
         }
     ],
-    "contributors": [
-        {
-            "affiliation": "Scientific Software Engineering Center at JHU",
-            "name": "Jane Doe",
-            "orcid": "0000-0000-0000-0000",
-            "type": "ProjectManager"
-        },
-        {
-            "affiliation": "Scientific Software Engineering Center at JHU",
-            "name": "John Doe",
-            "orcid": "0000-0000-0000-0000",
-            "type": "Sponsor"
-        }
-    ],
-    "grants": [
-        {"": ""}
-    ],
     "references": [
         "https://github.com/ssec-jhu/base-template 10.5281/zenodo.14052740."
     ],

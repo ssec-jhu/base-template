@@ -18,6 +18,7 @@ Things to do when using this template:
  * Correct "description" field in .zenodo.json to reflect description of child repo.
  * Correct the ``CI Status`` badge with the correct token in the URL.
  * Import package into https://readthedocs.org/.
+ * Update [zenodo.json](zenodo.json). For more details see [zenodo.json docs](https://developers.zenodo.org/#representation) and [zenodo docs on contributors vs creators](https://help.zenodo.org/docs/deposit/describe-records/contributors/).
 
 What's included in this template:
 

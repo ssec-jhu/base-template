@@ -34,14 +34,15 @@ What's included in this template:
 
 # Quickstart Guide
 
-Add here, streamlined instructions on how to get running and using the code as swiftly as possible. This shouldn't
-attempt to cover all OS's and/or build variations - just the canonical. Since users are most likely viewing this README
-from GitHub.com a repo context might be best where instructions look like those below. Alternatively, if this package is
-distributed on PyPi, perhaps just ``pip install <package-name>``, followed by quick user instructions will suffice.
+Add here, streamlined instructions on how to get the code running as swiftly as possible, and provide usage example(s).
+This shouldn't attempt to cover all OS's and/or build variations - just the canonical. Since users are most likely
+viewing this README from GitHub.com, assuming a repo context might be best, where instructions look like those below.
+Alternatively, if this package is distributed on PyPi, perhaps just ``pip install <package-name>``, followed by quick
+user instructions, will suffice.
 
-  * ``git clone <git-url>``
-  * ``conda create -n <env-name> python pip``
-  * ``conda activate <env-name>``
+  * ``git clone https://github.com/ssec-jhu/base-template``
+  * ``conda create -n package_name python pip``
+  * ``conda activate package_name``
   * ``pip pinstall -e .``
   * Add user instructions.
 

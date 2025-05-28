@@ -19,6 +19,7 @@ Things to do when using this template:
  * Correct the ``CI Status`` badge with the correct token in the URL.
  * Import package into https://readthedocs.org/.
  * Update [zenodo.json](zenodo.json). For more details see [zenodo.json docs](https://developers.zenodo.org/#representation) and [zenodo docs on contributors vs creators](https://help.zenodo.org/docs/deposit/describe-records/contributors/).
+ * Update quickstart guide below.
 
 What's included in this template:
 
@@ -30,6 +31,20 @@ What's included in this template:
  * Dockerfile.
  * Pytest example(s).
  * Githooks.
+
+# Quickstart Guide
+
+Add here, streamlined instructions on how to get the code running as swiftly as possible, and provide usage example(s).
+This shouldn't attempt to cover all OS's and/or build variations - just the canonical. Since users are most likely
+viewing this README from GitHub.com, assuming a repo context might be best, where instructions look like those below.
+Alternatively, if this package is distributed on PyPi, perhaps just ``pip install <package-name>``, followed by quick
+user instructions, will suffice.
+
+  * ``git clone https://github.com/ssec-jhu/base-template``
+  * ``conda create -n package_name python pip``
+  * ``conda activate package_name``
+  * ``pip pinstall -e .``
+  * Add user instructions.
 
 # Installation, Build, & Run instructions
 

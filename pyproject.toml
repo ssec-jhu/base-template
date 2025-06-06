@@ -115,3 +115,15 @@ convention = "google"
 docstring-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_docstring-quotes
 inline-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_inline-quotes
 multiline-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_multiline-quotes
+
+[dependency-groups]
+docs = [
+    "gitpython==3.1.44",
+    "nbsphinx==0.9.7",
+    "sphinx==6.2.1",
+    "sphinx-automodapi==0.19.0",
+    "sphinx-book-theme==1.1.4",
+    "sphinx-rtd-theme==3.0.2",
+    "tox==4.26.0",
+    "tox-uv==1.26.0",
+]

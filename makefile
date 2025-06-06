@@ -5,6 +5,9 @@ check-style:
 	uvx ruff format --check .
 	uvx ruff check --select E --select F --select I .
 
+dist:
+	uv run --group build python -m build
+
 docs:
 	uv run --directory docs --group docs make clean html latex epub
 

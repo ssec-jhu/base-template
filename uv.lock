@@ -873,6 +873,11 @@ docs = [
 ]
 
 [package.dev-dependencies]
+build = [
+    { name = "build" },
+    { name = "setuptools" },
+    { name = "setuptools-scm" },
+]
 docs = [
     { name = "gitpython" },
     { name = "nbsphinx" },
@@ -904,6 +909,11 @@ requires-dist = [
 provides-extras = ["dev", "docs"]
 
 [package.metadata.requires-dev]
+build = [
+    { name = "build", specifier = "==1.2.2.post1" },
+    { name = "setuptools", specifier = "==80.9.0" },
+    { name = "setuptools-scm", extras = ["toml"], specifier = "==8.3.1" },
+]
 docs = [
     { name = "gitpython", specifier = "==3.1.44" },
     { name = "nbsphinx", specifier = "==0.9.7" },

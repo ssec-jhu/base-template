@@ -5,4 +5,8 @@ check-style:
 docs:
 	uv run --directory docs --group docs make clean html latex epub
 
-.PHONY: check-style docs
+format:
+	uvx ruff format .
+	uvx ruff check --select I --fix .
+
+.PHONY: check-style docs format

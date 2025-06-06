@@ -1,3 +1,6 @@
+check-security:
+	uvx bandit -c pyproject.toml --severity-level=medium -r package_name
+
 check-style:
 	uvx ruff format --check .
 	uvx ruff check --select E --select F --select I .

@@ -1,3 +1,5 @@
+all: check-security check-style format test docs dist
+
 check-security:
 	uvx bandit -c pyproject.toml --severity-level=medium -r package_name
 
@@ -15,4 +17,7 @@ format:
 	uvx ruff format .
 	uvx ruff check --select I --fix .
 
-.PHONY: check-style docs format
+test:
+	uv run --group test --group prd pytest -v --cov=package_name --cov-report=xml --cov-report=html
+
+.PHONY: all check-security check-style dist docs format test

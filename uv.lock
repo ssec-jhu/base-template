@@ -851,25 +851,7 @@ name = "package-name"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["all"] },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "bandit" },
-    { name = "build" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "setuptools" },
-    { name = "setuptools-scm" },
-    { name = "tox" },
-]
-docs = [
-    { name = "nbsphinx" },
-    { name = "sphinx" },
-    { name = "sphinx-automodapi" },
-    { name = "sphinx-book-theme" },
-    { name = "sphinx-rtd-theme" },
+    { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.dev-dependencies]
@@ -888,10 +870,6 @@ docs = [
     { name = "tox" },
     { name = "tox-uv" },
 ]
-prd = [
-    { name = "fastapi" },
-    { name = "uvicorn", extra = ["standard"] },
-]
 test = [
     { name = "bandit" },
     { name = "gitpython" },
@@ -902,22 +880,9 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7" },
-    { name = "build", marker = "extra == 'dev'" },
-    { name = "fastapi", extras = ["all"] },
-    { name = "nbsphinx", marker = "extra == 'docs'" },
-    { name = "pytest", marker = "extra == 'dev'" },
-    { name = "pytest-cov", marker = "extra == 'dev'" },
-    { name = "ruff", marker = "extra == 'dev'" },
-    { name = "setuptools", marker = "extra == 'dev'", specifier = ">=61.2" },
-    { name = "setuptools-scm", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "sphinx", marker = "extra == 'docs'" },
-    { name = "sphinx-automodapi", marker = "extra == 'docs'" },
-    { name = "sphinx-book-theme", marker = "extra == 'docs'" },
-    { name = "sphinx-rtd-theme", marker = "extra == 'docs'" },
-    { name = "tox", marker = "extra == 'dev'" },
+    { name = "fastapi", extras = ["all"], specifier = "==0.115.12" },
+    { name = "uvicorn", extras = ["standard"], specifier = "==0.34.3" },
 ]
-provides-extras = ["dev", "docs"]
 
 [package.metadata.requires-dev]
 build = [
@@ -934,10 +899,6 @@ docs = [
     { name = "sphinx-rtd-theme", specifier = "==3.0.2" },
     { name = "tox", specifier = "==4.26.0" },
     { name = "tox-uv", specifier = "==1.26.0" },
-]
-prd = [
-    { name = "fastapi", specifier = "==0.115.12" },
-    { name = "uvicorn", extras = ["standard"], specifier = "==0.34.3" },
 ]
 test = [
     { name = "bandit", specifier = "==1.8.3" },

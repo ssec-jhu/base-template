@@ -13,7 +13,7 @@ Base repo template to be used by all others.
 
 Things to do when using this template:
 
- * Run ```python project_setup.py```
+ * Run ```make setup```
  * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
  * Correct "description" field in .zenodo.json to reflect description of child repo.
  * Correct the ``CI Status`` badge with the correct token in the URL.
@@ -25,7 +25,7 @@ What's included in this template:
 
  * Licence file
  * Code of Conduct
- * Build & Setup, inc. ``pip`` dependency requirements.
+ * Build & Setup, using `uv`.
  * Dependabot GitHub action
  * CI for GitHub actions: lint, pytest, build & publish docker image to GitHub Packages.
  * Dockerfile.
@@ -43,7 +43,7 @@ user instructions, will suffice.
   * ``git clone https://github.com/ssec-jhu/base-template``
   * ``conda create -n package_name python pip``
   * ``conda activate package_name``
-  * ``pip pinstall -e .``
+  * ``pip install -e .``
   * Add user instructions.
 
 # Installation, Build, & Run instructions
@@ -94,14 +94,15 @@ To be completed by child repo.
 
 
 # Testing
-_NOTE: The following steps require ``pip install -r requirements/dev.txt``._
 
-## Using tox
+Run
 
-* Run tox ``tox``. This will run all of linting, security, test, docs and package building within tox virtual environments.
+```make test```
+
+
 * To run an individual step, use ``tox -e {step}`` for example, ``tox -e test``, ``tox -e build-docs``, etc.
 
-Typically, the CI tests run in github actions will use tox to run as above. See also [ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
+Typically, the CI tests run in github actions will use uv to run as above. See also [ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
 
 ## Outside of tox:
 

@@ -17,6 +17,9 @@ format:
 	uvx ruff format .
 	uvx ruff check --select I --fix .
 
+setup:
+	uv run --with "GitPython==3.1.44" project_setup.py
+
 test:
 	uv run --group test --group prd pytest -v --cov=package_name --cov-report=xml --cov-report=html
 

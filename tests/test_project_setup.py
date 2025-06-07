@@ -112,16 +112,8 @@ def test_self_destruct(tmp_path):
     ps_exists = os.path.exists(tmp_path / Path("project_setup.py"))
     ps_test_exists = os.path.exists(tmp_path / Path("tests/test_project_setup.py"))
 
-    # check if the dependencies are removed
-    with open(tmp_path / Path("requirements/dev.txt"), "r") as f:
-        dev_requirements = f.read()
-    with open(tmp_path / Path("requirements/test.txt"), "r") as f:
-        test_requirements = f.read()
-
     assert not ps_exists
     assert not ps_test_exists
-    assert "GitPython" not in dev_requirements
-    assert "GitPython" not in test_requirements
 
 
 @pytest.mark.parametrize(

@@ -13,7 +13,7 @@ Thank you for your interest in contributing to package_name! As a contributor, y
    - Open your web browser and navigate to the main repository you want to fork. For this project, the URL is `https://github.com/ssec-jhu/base-template`.
 
 2. **Click the Fork Button**:
-   - In the upper-right corner of the repository page, you’ll see a button labeled **Fork**. Click it. 
+   - In the upper-right corner of the repository page, you’ll see a button labeled **Fork**. Click it.
    - GitHub will ask you to select your GitHub account or organization where you want the fork to be created.
 
 3. **Clone Your Fork Locally**:
@@ -29,7 +29,7 @@ You now have your own copy (fork) of the repository where you can make changes i
 
 1. **Fork and Clone the Repository**:
    - Follow the instructions in the [How to Fork the Repository](#how-to-fork-the-repository) section.
-   ```
+
 
 2. **Add the Main Repository as Upstream**: To keep your fork in sync with the latest updates from the main repo, add it as a second remote named `upstream`:
    ```bash
@@ -45,9 +45,11 @@ You now have your own copy (fork) of the repository where you can make changes i
 
 ## Making Changes
 
-- **Coding Standards**: Follow PEP 8 for Python code (or your organization’s standards). Use `tox -e check-style` to ensure code formatting aligns with the repository’s requirements.
-- **Testing**: Ensure your changes pass all tests. Include relevant tests for any new features you add.
-- **Documentation**: Update the documentation for any significant code changes. This includes comments, docstrings, and relevant updates to the `README.md`.
+- **Coding Standards**: Follow PEP 8 for Python code (or your organization’s standards). Use `make format` and `make check-style` to ensure code formatting aligns with the repository’s requirements.
+- **Testing**: Ensure your changes pass all tests. Include relevant tests for any new features you add, run `make test` to run the test suite.
+- **Documentation**: Update the documentation for any significant code changes. This includes comments, docstrings, and relevant updates to the `README.md`. Ensure the documentation
+builds correctly by running `make docs` and checking the output.
+
 
 ## Keeping Your Fork Updated
 

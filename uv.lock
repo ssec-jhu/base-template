@@ -851,7 +851,6 @@ name = "package-name"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["all"] },
-    { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.dev-dependencies]
@@ -870,6 +869,10 @@ docs = [
     { name = "tox" },
     { name = "tox-uv" },
 ]
+prd = [
+    { name = "fastapi", extra = ["all"] },
+    { name = "uvicorn", extra = ["standard"] },
+]
 test = [
     { name = "bandit" },
     { name = "gitpython" },
@@ -879,10 +882,7 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "fastapi", extras = ["all"], specifier = "==0.115.12" },
-    { name = "uvicorn", extras = ["standard"], specifier = "==0.34.3" },
-]
+requires-dist = [{ name = "fastapi", extras = ["all"] }]
 
 [package.metadata.requires-dev]
 build = [
@@ -899,6 +899,10 @@ docs = [
     { name = "sphinx-rtd-theme", specifier = "==3.0.2" },
     { name = "tox", specifier = "==4.26.0" },
     { name = "tox-uv", specifier = "==1.26.0" },
+]
+prd = [
+    { name = "fastapi", extras = ["all"], specifier = "==0.115.12" },
+    { name = "uvicorn", extras = ["standard"], specifier = "==0.34.3" },
 ]
 test = [
     { name = "bandit", specifier = "==1.8.3" },

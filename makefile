@@ -31,7 +31,7 @@ setup:
 
 # Runs the tests using pytest and generates coverage reports
 test:
-	uv run --group test pytest -v --cov=package_name --cov-report=xml --cov-report=html
+	uv run --group test --group prd pytest -v --cov=package_name --cov-report=xml --cov-report=html
 
 # https://stackoverflow.com/a/77245502/2691018
 ## Print this help

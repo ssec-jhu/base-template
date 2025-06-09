@@ -10,8 +10,7 @@ license = {file = "LICENSE"}
 
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi[all]==0.115.12",
-    "uvicorn[standard]==0.34.3",
+    "fastapi[all]",
 ]
 
 [project.urls]
@@ -111,6 +110,10 @@ docs = [
     "sphinx-rtd-theme==3.0.2",
     "tox==4.26.0",
     "tox-uv==1.26.0",
+]
+prd = [
+    "fastapi[all]==0.115.12",
+    "uvicorn[standard]==0.34.3",
 ]
 test = [
     "bandit==1.8.3",

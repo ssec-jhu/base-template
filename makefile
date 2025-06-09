@@ -1,7 +1,7 @@
 ## Welcome to the MakeFile for package_name!
 
 ## Runs all of the commands (excluding setup) (runs by default)
-all: check-security format check-style test docs dist
+all: check-security format check-style dist test docs
 
 ## Runs bandit on the project to check for security issues
 check-security:

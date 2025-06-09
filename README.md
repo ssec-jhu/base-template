@@ -23,11 +23,11 @@ Things to do when using this template:
 
 What's included in this template:
 
- * Licence file
+ * License file
  * Code of Conduct
  * Build & Setup, using `uv`.
  * Dependabot GitHub action
- * CI for GitHub actions: lint, pytest, build & publish docker image to GitHub Packages.
+ * CI for GitHub actions: lint, tests, build & publish docker image to GitHub Packages.
  * Dockerfile.
  * Pytest example(s).
  * Githooks.

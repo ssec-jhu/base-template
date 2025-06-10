@@ -33,6 +33,24 @@ jobs:
         run: make check-style
         shell: bash
 
+  check-env:
+    name: Check that the uv.lock file is consistent with pyproject.toml Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and set the python version ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Lint
+        run: make check-env
+        shell: bash
+
   test:
     name: pytests on Python ${{ matrix.python-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

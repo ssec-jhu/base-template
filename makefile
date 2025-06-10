@@ -1,7 +1,7 @@
 ## Welcome to the MakeFile for package_name!
 
 ## Runs all of the commands (excluding setup) (runs by default)
-all: check-security format check-style dist test docs
+all: check-env check-security format check-style dist test docs
 
 ## Runs bandit on the project to check for security issues
 check-security:
@@ -11,6 +11,10 @@ check-security:
 check-style:
 	uvx ruff format --check .
 	uvx ruff check --select E --select F --select I .
+
+## Checks the environment for consistency
+check-env:
+	uv lock --check
 
 # Builds the package distribution using build
 dist:
@@ -42,4 +46,4 @@ help:
         {print $$1, "\t", c; c=0} \
          END { print c }' $(MAKEFILE_LIST)
 
-.PHONY: all check-security check-style dist docs format help test
+.PHONY: all check-env check-security check-style dist docs format help test

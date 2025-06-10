@@ -1,5 +1,8 @@
 ## Welcome to the MakeFile for package_name!
 
+ENV_FAIL_MSG = Environment check failed. One or more of your dependencies or dependency groups is no longer valid. Please run 'uv sync --group all' to fix the environment.
+
+
 ## Runs all of the commands (excluding setup) (runs by default)
 all: check-env check-security format check-style dist test docs
 
@@ -14,7 +17,7 @@ check-style:
 
 ## Checks the environment for consistency
 check-env:
-	uv lock --check
+	uv sync --check --group all || (echo $(ENV_FAIL_MSG) && false)
 
 # Builds the package distribution using build
 dist:

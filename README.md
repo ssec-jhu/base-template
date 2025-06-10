@@ -129,9 +129,13 @@ make
 The CI tests run in github actions will use `uv` to run as above. See also
 [ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
 
-Each of the tests can be run individually as well, as described below. All of
-the below commands assume you are in the root directory of the repository.
+Each of the tests can be run individually as well, as described below.
+Additionally, the commands can be run directly in the terminal by copying
+the commands from the makefile, which is located at the root of the repository
+and is named `makefile`.
 
+All of the below commands assume you are in the root directory of the
+repository.
 
 # Linting:
 Linting tests typos, syntax, style, and other simple code analysis tests.

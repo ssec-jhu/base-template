@@ -50,41 +50,10 @@ user instructions, will suffice.
 
 ### uv:
 
-Dependencies various environments (docs, building, testing) for the base
-template area managed via [uv](https://docs.astral.sh/uv/). If you don't have
+Dependencies various environments (docs, building, testing) for the package_name area managed via [uv](https://docs.astral.sh/uv/). If you don't have
 `uv` installed already, follow the [installation
 instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
 
-Once `uv` is installed, you can set up your environment by running:
-
-```bash
-uv sync
-```
-
-This will create a new python virtual environment and install all the
-current dependencies. To add a dependency, run:
-
-```bash
-uv add <package_name>
-```
-
-To remove a dependency, run:
-
-```bash
-uv remove <package_name>
-```
-
-To update a package, run:
-
-```bash
-uv lock --upgrade-package <package_name>
-```
-
-See the `uv` [documentation](https://docs.astral.sh/uv/guides/projects/#managing-dependencies) for more details on managing dependencies.
-
-> [!CAUTION]
-> If you do not use `uv` to manage the dependencies, your package will
-> likely fail the CI/CD tests and builds.
 
 
 ### Build:
@@ -95,10 +64,15 @@ See the `uv` [documentation](https://docs.astral.sh/uv/guides/projects/#managing
   * Build image: ``docker build -t <image_name> .``
 
   #### with Python ecosystem:
-
+  * Run ``make dist``, this will create a ``dist/`` directory with the built package.
+  * You can install the package using pip:
+    ```bash
+    pip install dist/<package_name>-<version>.tar.gz
+    ````
   ```bash
   make dist
   ```
+
 
 ### Run
 

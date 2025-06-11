@@ -45,6 +45,39 @@ You now have your own copy (fork) of the repository where you can make changes i
 
 ## Making Changes
 
+Once `uv` is installed, you can set up your environment by running:
+
+```bash
+uv sync
+```
+
+This will create a new python virtual environment and install all the
+current dependencies. To add a dependency, run:
+
+```bash
+uv add <package_name>
+```
+
+To remove a dependency, run:
+
+```bash
+uv remove <package_name>
+```
+
+To update a package, run:
+
+```bash
+uv lock --upgrade-package <package_name>
+```
+
+See the `uv` [documentation](https://docs.astral.sh/uv/guides/projects/#managing-dependencies) for more details on managing dependencies.
+
+> [!CAUTION]
+> If you do not use `uv` to manage the dependencies, your package will
+> likely fail the CI/CD tests and builds.
+
+
+
 - **Coding Standards**: Follow PEP 8 for Python code (or your organization’s standards). Use `make format` and `make check-style` to ensure code formatting aligns with the repository’s requirements.
 - **Testing**: Ensure your changes pass all tests. Include relevant tests for any new features you add, run `make test` to run the test suite.
 - **Documentation**: Update the documentation for any significant code changes. This includes comments, docstrings, and relevant updates to the `README.md`. Ensure the documentation

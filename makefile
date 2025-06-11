@@ -1,8 +1,5 @@
 ## Welcome to the MakeFile for package_name!
 
-ENV_FAIL_MSG = Environment check failed. One or more of your dependencies or dependency groups is no longer valid. Please run 'uv sync --group all' to fix the environment.
-
-
 ## Runs all of the commands (excluding setup) (runs by default)
 all: check-env check-security format check-style dist test docs
 
@@ -17,15 +14,16 @@ check-style:
 
 ## Checks the environment for consistency
 check-env:
-	uv sync --check --group all || (echo $(ENV_FAIL_MSG) && false)
+	uv lock --check-exists
+	uv lock --check
 
 # Builds the package distribution using build
 dist:
-	uv run --group build python -m build
+	uv run --group build --locked python -m build
 
 # Build the documentation using Sphinx
 docs:
-	uv run --directory docs --group docs make clean html latex epub
+	uv run --directory docs --group docs --locked make clean html latex epub
 
 # Formats the code using ruff according the the `black` style
 format:
@@ -34,11 +32,11 @@ format:
 
 # Runs the setup script for renaming and setting up the project
 setup:
-	uv run --with "GitPython==3.1.44" project_setup.py
+	uv run --with "GitPython==3.1.44" --locked project_setup.py
 
 # Runs the tests using pytest and generates coverage reports
 test:
-	uv run --group test --group prd pytest -v --cov=package_name --cov-report=xml --cov-report=html
+	uv run --group test --group prd --locked pytest -v --cov=package_name --cov-report=xml --cov-report=html
 
 # https://stackoverflow.com/a/77245502/2691018
 ## Print this help

@@ -46,14 +46,12 @@ user instructions, will suffice.
   * ``pip install -e .``
   * Add user instructions.
 
-# Installation, Build, & Run instructions
+# Build, Installation, and Run instructions
 
-### uv:
-
-Dependencies various environments (docs, building, testing) for the package_name area managed via [uv](https://docs.astral.sh/uv/). If you don't have
+package_name uses [uv](https://docs.astral.sh/uv/) as an environment manager and
+for common tasks such as building, running, and testing the package. If you don't have
 `uv` installed already, follow the [installation
 instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
-
 
 
 ### Build:
@@ -69,10 +67,6 @@ instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
     ```bash
     pip install dist/<package_name>-<version>.tar.gz
     ````
-  ```bash
-  make dist
-  ```
-
 
 ### Run
 
@@ -83,7 +77,7 @@ instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
 
   #### with Python ecosystem:
   * Follow the above [Build with Python ecosystem instructions](#with-python-ecosystem).
-  * Run ``uv run uvicorn package_name.app.main:app --host 0.0.0.0 --port 8000``.
+  * Run ``uvicorn package_name.app.main:app --host 0.0.0.0 --port 8000``.
     _NOTE: This is just an example and is obviously application dependent._
 
 ### Usage:

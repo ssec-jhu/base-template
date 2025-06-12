@@ -4,11 +4,11 @@
 # The file permissions may need changing using ``chmod +x .git/hooks/pre-push``
 
 echo Running ruff linter tests...
-TEST_RESULTS=$(tox -e check-style)
+TEST_RESULTS=$(make check-style)
 RETURN_VALUE=$?
 if [ $RETURN_VALUE != 0 ]; then
   echo "$TEST_RESULTS"
-  echo "To auto format run: tox -e format"
+  echo "To auto format run: make format"
   exit 1
 fi
 echo PASSED

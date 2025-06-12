@@ -13,25 +13,6 @@ dependencies = [
     "fastapi[all]",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "bandit>=1.7",
-    "build",
-    "pytest",
-    "pytest-cov",
-    "ruff",
-    "setuptools>=61.2",
-    "setuptools_scm[toml]>=8.0",
-    "tox"
-]
-docs = [
-    "sphinx",
-    "sphinx_rtd_theme",
-    "sphinx_book_theme",
-    "sphinx-automodapi",
-    "nbsphinx"
-]
-
 [project.urls]
 homepage = "https://github.com/ssec-jhu/base-template"
 documentation = "https://github.com/ssec-jhu/base-template"
@@ -62,8 +43,6 @@ lint.select = ["ALL"]
 lint.ignore = [
     "ANN002",  # https://docs.astral.sh/ruff/rules/missing-type-args/
     "ANN003",  # https://docs.astral.sh/ruff/rules/missing-type-kwargs/
-    "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-self/
-    "ANN102",  # https://docs.astral.sh/ruff/rules/missing-type-cls/
     "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
     "PLR0913",  # https://docs.astral.sh/ruff/rules/too-many-arguments/
     "EM101",  # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
@@ -115,3 +94,35 @@ convention = "google"
 docstring-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_docstring-quotes
 inline-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_inline-quotes
 multiline-quotes = "double"  # https://docs.astral.sh/ruff/settings/#lint_flake8-quotes_multiline-quotes
+
+[dependency-groups]
+build = [
+    "build==1.2.2.post1",
+    "setuptools==80.9.0",
+    "setuptools-scm[toml]==8.3.1",
+]
+docs = [
+    "gitpython==3.1.44",
+    "nbsphinx==0.9.7",
+    "sphinx==6.2.1",
+    "sphinx-automodapi==0.19.0",
+    "sphinx-book-theme==1.1.4",
+    "sphinx-rtd-theme==3.0.2",
+]
+prd = [
+    "fastapi[all]==0.115.12",
+    "uvicorn[standard]==0.34.3",
+]
+test = [
+    "bandit==1.8.3",
+    "gitpython==3.1.44",
+    "pytest==8.3.5",
+    "pytest-cov==6.1.1",
+    "ruff==0.11.12",
+]
+all = [
+    {include-group = "build"},
+    {include-group = "docs"},
+    {include-group = "prd"},
+    {include-group = "test"},
+]

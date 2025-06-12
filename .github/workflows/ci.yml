@@ -22,19 +22,33 @@ jobs:
       matrix:
         python-version: [3.11]
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+
+      - name: Install uv and set the python version ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip3 install -r requirements/dev.txt
-        shell: bash
+
       - name: Lint
-        run: tox -e check-style
+        run: make check-style
+        shell: bash
+
+  check-env:
+    name: Check that the uv.lock file is consistent with pyproject.toml Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and set the python version ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Lint
+        run: make check-env
         shell: bash
 
   test:
@@ -48,22 +62,16 @@ jobs:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
           lfs: true
-    - uses: actions/setup-python@v4
+    - name: Install uv and set the python version ${{ matrix.python-version }}
+      uses: astral-sh/setup-uv@v5
       with:
-          python-version: ${{ matrix.python-version }}
-          cache: "pip"
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip3 install -r requirements/dev.txt
+        python-version: ${{ matrix.python-version }}
+    - name: Test with pytest
+      run: make test
       shell: bash
-    - name: pip install package
-      run: pip install .
-    - name: Test with tox (pytest)
-      run: tox -e test
     - name: Archive coverage report
       uses: actions/upload-artifact@v4.4.3
       with:
@@ -89,21 +97,15 @@ jobs:
       matrix:
         python-version: [ 3.11 ]
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+
+      - name: Install uv and set the python version ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip3 install -r requirements/docs.txt
-        shell: bash
-      - name: Build sphinx docs.
-        env:
-          SPHINXOPTS: '-W'
-        run: tox -e build-docs
+
+      - name: Lint
+        run: make docs
         shell: bash
 
   build:
@@ -116,7 +118,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1

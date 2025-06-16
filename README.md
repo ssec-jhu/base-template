@@ -13,53 +13,46 @@ Base repo template to be used by all others.
 
 Things to do when using this template:
 
- * Run ```python project_setup.py```
- * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
- * Correct "description" field in .zenodo.json to reflect description of child repo.
+ * Run ```make setup```
+ * Uncomment the above DOI in README.md and correct ``<insert_ID_number>``.
+ * Correct the "description" field in .zenodo.json to reflect the description of the child repo.
  * Correct the ``CI Status`` badge with the correct token in the URL.
  * Import package into https://readthedocs.org/.
  * Update [zenodo.json](zenodo.json). For more details see [zenodo.json docs](https://developers.zenodo.org/#representation) and [zenodo docs on contributors vs creators](https://help.zenodo.org/docs/deposit/describe-records/contributors/).
- * Update quickstart guide below.
+ * Update the quickstart guide below.
 
 What's included in this template:
 
- * Licence file
+ * License file
  * Code of Conduct
- * Build & Setup, inc. ``pip`` dependency requirements.
+ * Build & Setup, using `uv`.
  * Dependabot GitHub action
- * CI for GitHub actions: lint, pytest, build & publish docker image to GitHub Packages.
+ * CI for GitHub actions: lint, tests, build & publish docker image to GitHub Packages.
  * Dockerfile.
  * Pytest example(s).
  * Githooks.
 
 # Quickstart Guide
 
-Add here, streamlined instructions on how to get the code running as swiftly as possible, and provide usage example(s).
+Add here streamlined instructions on how to get the code running as swiftly as possible and provide usage example(s).
 This shouldn't attempt to cover all OS's and/or build variations - just the canonical. Since users are most likely
 viewing this README from GitHub.com, assuming a repo context might be best, where instructions look like those below.
-Alternatively, if this package is distributed on PyPi, perhaps just ``pip install <package-name>``, followed by quick
+Alternatively, if this package is distributed on PyPI, perhaps just ``pip install <package-name>``, followed by quick
 user instructions, will suffice.
 
   * ``git clone https://github.com/ssec-jhu/base-template``
   * ``conda create -n package_name python pip``
   * ``conda activate package_name``
-  * ``pip pinstall -e .``
+  * ``pip install -e .``
   * Add user instructions.
 
-# Installation, Build, & Run instructions
+# Build, Installation, and Run instructions
 
-### Conda:
+package_name uses [uv](https://docs.astral.sh/uv/) as an environment manager
+for common tasks such as building, running, and testing the package. If you don't have
+`uv` installed already, follow the [installation
+instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
 
-For additional cmds see the [Conda cheat-sheet](https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf).
-
- * Download and install either [miniconda](https://docs.conda.io/en/latest/miniconda.html#installing) or [anaconda](https://docs.anaconda.com/free/anaconda/install/index.html).
- * Create new environment (env) and install ``conda create -n <environment_name>``
- * Activate/switch to new env ``conda activate <environment_name>``
- * ``cd`` into repo dir.
- * Install ``python`` and ``pip`` ``conda install python=3.11 pip``
- * Install all required dependencies (assuming local dev work), there are two ways to do this
-   * If working with tox (recommended) ``pip install -r requirements/dev.txt``.
-   * If you would like to setup an environment with all requirements to run outside of tox ``pip install -r requirements/all.txt``.
 
 ### Build:
 
@@ -69,14 +62,11 @@ For additional cmds see the [Conda cheat-sheet](https://docs.conda.io/projects/c
   * Build image: ``docker build -t <image_name> .``
 
   #### with Python ecosystem:
-  * ``cd`` into repo dir.
-  * ``conda activate <environment_name>``
-  * Build and install package in <environment_name> conda env: ``pip install .``
-  * Do the same but in dev/editable mode (changes to repo will be reflected in env installation upon python kernel restart)
-    _NOTE: This is the preferred installation method for dev work._
-    ``pip install -e .``.
-    _NOTE: If you didn't install dependencies from ``requirements/dev.txt``, you can install
-    a looser constrained set of deps using: ``pip install -e .[dev]``._
+  * Run ``make dist``, this will create a ``dist/`` directory with the built package.
+  * You can install the package using pip:
+    ```bash
+    pip install dist/<package_name>-<version>.tar.gz
+    ````
 
 ### Run
 
@@ -87,61 +77,8 @@ For additional cmds see the [Conda cheat-sheet](https://docs.conda.io/projects/c
 
   #### with Python ecosystem:
   * Follow the above [Build with Python ecosystem instructions](#with-python-ecosystem).
-  * Run ``uvicorn package_name.app.main:app --host 0.0.0.0 --port", "8000``. _NOTE: This is just an example and is obviously application dependent._
+  * Run ``uvicorn package_name.app.main:app --host 0.0.0.0 --port 8000``.
+    _NOTE: This is just an example and is obviously application dependent._
 
 ### Usage:
 To be completed by child repo.
-
-
-# Testing
-_NOTE: The following steps require ``pip install -r requirements/dev.txt``._
-
-## Using tox
-
-* Run tox ``tox``. This will run all of linting, security, test, docs and package building within tox virtual environments.
-* To run an individual step, use ``tox -e {step}`` for example, ``tox -e test``, ``tox -e build-docs``, etc.
-
-Typically, the CI tests run in github actions will use tox to run as above. See also [ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
-
-## Outside of tox:
-
-The below assume you are running steps without tox, and that all requirements are installed into a conda environment, e.g. with ``pip install -r requirements/all.txt``.
-
-_NOTE: Tox will run these for you, this is specifically if there is a requirement to setup environment and run these outside the purview of tox._
-
-### Linting:
-Facilitates in testing typos, syntax, style, and other simple code analysis tests.
-  * ``cd`` into repo dir.
-  * Switch/activate correct environment: ``conda activate <environment_name>``
-  * Run ``ruff .``
-  * This can be automatically run (recommended for devs) every time you ``git push`` by installing the provided
-    ``pre-push`` git hook available in ``./githooks``.
-    Instructions are in that file - just ``cp ./githooks/pre-push .git/hooks/;chmod +x .git/hooks/pre-push``.
-
-### Security Checks:
-Facilitates in checking for security concerns using [Bandit](https://bandit.readthedocs.io/en/latest/index.html).
- * ``cd`` into repo dir.
- * ``bandit --severity-level=medium -r package_name``
-
-### Unit Tests:
-Facilitates in testing core package functionality at a modular level.
-  * ``cd`` into repo dir.
-  * Run all available tests: ``pytest .``
-  * Run specific test: ``pytest tests/test_util.py::test_base_dummy``.
-
-### Regression tests:
-Facilitates in testing whether core data results differ during development.
-  * WIP
-
-### Smoke Tests:
-Facilitates in testing at the application and infrastructure level.
-  * WIP
-
-### Build Docs:
-Facilitates in building, testing & viewing the docs.
- * ``cd`` into repo dir.
- * ``pip install -r requirements/docs.txt``
- * ``cd docs``
- * ``make clean``
- * ``make html``
- * To view the docs in your default browser run ``open docs/_build/html/index.html``.

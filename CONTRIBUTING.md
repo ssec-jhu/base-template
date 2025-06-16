@@ -13,7 +13,7 @@ Thank you for your interest in contributing to package_name! As a contributor, y
    - Open your web browser and navigate to the main repository you want to fork. For this project, the URL is `https://github.com/ssec-jhu/base-template`.
 
 2. **Click the Fork Button**:
-   - In the upper-right corner of the repository page, you’ll see a button labeled **Fork**. Click it. 
+   - In the upper-right corner of the repository page, you’ll see a button labeled **Fork**. Click it.
    - GitHub will ask you to select your GitHub account or organization where you want the fork to be created.
 
 3. **Clone Your Fork Locally**:
@@ -29,7 +29,7 @@ You now have your own copy (fork) of the repository where you can make changes i
 
 1. **Fork and Clone the Repository**:
    - Follow the instructions in the [How to Fork the Repository](#how-to-fork-the-repository) section.
-   ```
+
 
 2. **Add the Main Repository as Upstream**: To keep your fork in sync with the latest updates from the main repo, add it as a second remote named `upstream`:
    ```bash
@@ -45,9 +45,136 @@ You now have your own copy (fork) of the repository where you can make changes i
 
 ## Making Changes
 
-- **Coding Standards**: Follow PEP 8 for Python code (or your organization’s standards). Use `tox -e check-style` to ensure code formatting aligns with the repository’s requirements.
-- **Testing**: Ensure your changes pass all tests. Include relevant tests for any new features you add.
-- **Documentation**: Update the documentation for any significant code changes. This includes comments, docstrings, and relevant updates to the `README.md`.
+package_name uses [uv](https://docs.astral.sh/uv/) as an environment manager and
+for common tasks such as building, running, and testing the package. If you
+don't have `uv` installed already, follow the [installation
+instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
+
+Once `uv` is installed, you can setup a virtual environment with the required dependencies by running:
+
+```bash
+uv sync
+```
+
+This will create a new python virtual environment located in a directory called
+`.venv`, install all the current dependencies, and an editable installation of
+package_name. You can activate this environment by running:
+
+```bash
+source .venv/bin/activate
+```
+
+If your using Visual Studio Code, it should automatically detect the virtual
+environment and prompt you to use it. If not, you can select the interpreter
+manually by pressing `Ctrl+Shift+P` and typing `Python: Select Interpreter`,
+then choosing the one in `.venv`.
+
+If your using PyCharm, support for `uv` is built-in. Follow the [PyCharm
+documentation](https://www.jetbrains.com/help/pycharm/uv.html#) to set up your
+project.
+
+As you develop, you may need to add or remove dependencies. `uv` provides commands to manage your project’s dependencies easily.
+
+To add a dependency,
+run:
+
+```bash
+uv add <package_name>
+```
+
+To remove a dependency, run:
+
+```bash
+uv remove <package_name>
+```
+
+To update a package, run:
+
+```bash
+uv lock --upgrade-package <package>
+```
+
+Manage dependencies while you develop outside of `uv`, you need still need to
+update the `uv` environment. You can do this by adding the packages using `uv
+add` as above or by adding the dependencies to the `pyproject.toml` file and
+then running:
+
+```bash
+uv lock
+```
+
+This will update the `pyproject.toml` and `uv.lock` files with the new
+dependency information.
+
+See the `uv` [documentation](https://docs.astral.sh/uv/guides/projects/#managing-dependencies) for more details on managing dependencies.
+
+> [!CAUTION]
+> If you do not use `uv` to manage the dependencies, your package will
+> likely fail the CI/CD tests and builds.
+
+As you work on your feature or bug fix, please adhere to the following
+guidelines:
+
+- **Coding Standards**: Follow PEP 8 for Python code (or your organization’s
+  standards). Use `make format` and `make check-style` to ensure code formatting
+  aligns with the repository’s requirements.
+- **Testing**: Ensure your changes pass all tests. Include relevant tests for
+  any new features you add, run `make test` to run the test suite.
+- **Documentation**: Update the documentation for any significant code changes.
+  This includes comments, docstrings, and relevant updates to the `README.md`.
+  Ensure the documentation builds correctly by running `make docs` and checking
+  the output..
+
+## Testing
+
+The code in the repository is checked for correctness using a variety of tests, including linting, security checks, unit tests, and more. The tests are designed to ensure that the code is functioning as expected and to catch any potential issues early in the development process.
+
+All the checks can be run using the makefile by running
+
+```bash
+make
+```
+
+The CI tests run in GitHub actions will use `uv` to run. See also
+[ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
+
+Each of the tests can be run individually as well, as described below.
+Additionally, the commands can be run directly in the terminal by copying
+the commands from the makefile, which is located at the root of the repository
+and is named `makefile`.
+
+All of the below commands assume you are in the root directory of the
+repository.
+
+### Linting/Formatting:
+Linting tests typos, syntax, style, and other simple code analysis tests.
+  * Run `make check-style`
+  * This can be automatically run (recommended for devs) every time you ``git push`` by installing the provided
+    ``pre-push`` git hook available in ``./githooks``.
+    Instructions are in that file - just ``cp ./githooks/pre-push .git/hooks/;chmod +x .git/hooks/pre-push``.
+
+### Security Checks:
+Facilitates checking for security concerns using [Bandit](https://bandit.readthedocs.io/en/latest/index.html).
+ * Run `make check-security`
+
+### Unit Tests:
+Facilitates testing core package functionality at a modular level. Is done
+using pytest with the dependencies defined in the `test` group. Testing
+ * Run `make test`
+
+### Regression tests:
+Facilitates testing whether core data results differ during development.
+  * WIP
+
+### Smoke Tests:
+Facilitates testing at the application and infrastructure level.
+  * WIP
+
+### Build Docs:
+Update the documentation for any significant code changes. This includes
+comments, docstrings, and relevant updates to the `README.md`. Ensure the
+documentation builds correctly by running `make docs` and checking the output.
+
 
 ## Keeping Your Fork Updated
 
@@ -102,4 +229,3 @@ open a PR adding yourself to the [.zenodo.json file](.zenodo.json) along with yo
 ---
 
 Thank you for your contributions to package_name! We’re excited to work with you.
-

@@ -75,10 +75,6 @@ project.
 
 As you develop, you may need to add or remove dependencies. `uv` provides commands to manage your project’s dependencies easily.
 
-> [!CAUTION]
-> If you do not use `uv` to manage the dependencies, your package will
-> likely fail the CI/CD tests and builds.
-
 To add a dependency,
 run:
 

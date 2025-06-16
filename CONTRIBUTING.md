@@ -139,7 +139,7 @@ All the checks can be run using the makefile by running
 make
 ```
 
-The CI tests run in github actions will use `uv` to run as above. See also
+The CI tests run in GitHub actions will use `uv` to run. See also
 [ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
 
 Each of the tests can be run individually as well, as described below.
@@ -158,20 +158,20 @@ Linting tests typos, syntax, style, and other simple code analysis tests.
     Instructions are in that file - just ``cp ./githooks/pre-push .git/hooks/;chmod +x .git/hooks/pre-push``.
 
 ### Security Checks:
-Facilitates in checking for security concerns using [Bandit](https://bandit.readthedocs.io/en/latest/index.html).
+Facilitates checking for security concerns using [Bandit](https://bandit.readthedocs.io/en/latest/index.html).
  * Run `make check-security`
 
 ### Unit Tests:
-Facilitates in testing core package functionality at a modular level. Is done
+Facilitates testing core package functionality at a modular level. Is done
 using pytest with the dependencies defined in the `test` group. Testing
  * Run `make test`
 
 ### Regression tests:
-Facilitates in testing whether core data results differ during development.
+Facilitates testing whether core data results differ during development.
   * WIP
 
 ### Smoke Tests:
-Facilitates in testing at the application and infrastructure level.
+Facilitates testing at the application and infrastructure level.
   * WIP
 
 ### Build Docs:

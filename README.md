@@ -14,12 +14,12 @@ Base repo template to be used by all others.
 Things to do when using this template:
 
  * Run ```make setup```
- * Uncomment above DOI in README.md and correct ``<insert_ID_number>``.
- * Correct "description" field in .zenodo.json to reflect description of child repo.
+ * Uncomment the above DOI in README.md and correct ``<insert_ID_number>``.
+ * Correct the "description" field in .zenodo.json to reflect the description of the child repo.
  * Correct the ``CI Status`` badge with the correct token in the URL.
  * Import package into https://readthedocs.org/.
  * Update [zenodo.json](zenodo.json). For more details see [zenodo.json docs](https://developers.zenodo.org/#representation) and [zenodo docs on contributors vs creators](https://help.zenodo.org/docs/deposit/describe-records/contributors/).
- * Update quickstart guide below.
+ * Update the quickstart guide below.
 
 What's included in this template:
 
@@ -34,10 +34,10 @@ What's included in this template:
 
 # Quickstart Guide
 
-Add here, streamlined instructions on how to get the code running as swiftly as possible, and provide usage example(s).
+Add here streamlined instructions on how to get the code running as swiftly as possible and provide usage example(s).
 This shouldn't attempt to cover all OS's and/or build variations - just the canonical. Since users are most likely
 viewing this README from GitHub.com, assuming a repo context might be best, where instructions look like those below.
-Alternatively, if this package is distributed on PyPi, perhaps just ``pip install <package-name>``, followed by quick
+Alternatively, if this package is distributed on PyPI, perhaps just ``pip install <package-name>``, followed by quick
 user instructions, will suffice.
 
   * ``git clone https://github.com/ssec-jhu/base-template``
@@ -48,7 +48,7 @@ user instructions, will suffice.
 
 # Build, Installation, and Run instructions
 
-package_name uses [uv](https://docs.astral.sh/uv/) as an environment manager and
+package_name uses [uv](https://docs.astral.sh/uv/) as an environment manager
 for common tasks such as building, running, and testing the package. If you don't have
 `uv` installed already, follow the [installation
 instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
@@ -82,53 +82,3 @@ instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation).
 
 ### Usage:
 To be completed by child repo.
-
-
-# Testing
-
-The code in the repository is checked for correctness using a variety of tests, including linting, security checks, unit tests, and more. The tests are designed to ensure that the code is functioning as expected and to catch any potential issues early in the development process.
-
-All the checks can be run using the makefile by running
-
-```bash
-make
-```
-
-The CI tests run in github actions will use `uv` to run as above. See also
-[ci.yml](https://github.com/ssec-jhu/base-template/blob/main/.github/workflows/ci.yml).
-
-Each of the tests can be run individually as well, as described below.
-Additionally, the commands can be run directly in the terminal by copying
-the commands from the makefile, which is located at the root of the repository
-and is named `makefile`.
-
-All of the below commands assume you are in the root directory of the
-repository.
-
-# Linting:
-Linting tests typos, syntax, style, and other simple code analysis tests.
-  * Run `make check-style`
-  * This can be automatically run (recommended for devs) every time you ``git push`` by installing the provided
-    ``pre-push`` git hook available in ``./githooks``.
-    Instructions are in that file - just ``cp ./githooks/pre-push .git/hooks/;chmod +x .git/hooks/pre-push``.
-
-### Security Checks:
-Facilitates in checking for security concerns using [Bandit](https://bandit.readthedocs.io/en/latest/index.html).
- * Run `make check-security`
-
-### Unit Tests:
-Facilitates in testing core package functionality at a modular level. Is done
-using pytest with the dependencies defined in the `test` group. Testing
- * Run `make test`
-
-### Regression tests:
-Facilitates in testing whether core data results differ during development.
-  * WIP
-
-### Smoke Tests:
-Facilitates in testing at the application and infrastructure level.
-  * WIP
-
-### Build Docs:
-Facilitates in building, testing & viewing the docs.
-  * Run `make docs`

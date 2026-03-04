@@ -1,7 +1,6 @@
 # SSEC-JHU <package_name>
 
 [![CI](https://github.com/ssec-jhu/base-template/actions/workflows/ci.yml/badge.svg)](https://github.com/ssec-jhu/base-template/actions/workflows/ci.yml)
-[![Documentation Status](https://readthedocs.org/projects/ssec-jhu-base-template/badge/?version=latest)](https://ssec-jhu-base-template.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/ssec-jhu/base-template/branch/main/graph/badge.svg?token=0KPNKHRC2V)](https://codecov.io/gh/ssec-jhu/base-template)
 [![Security](https://github.com/ssec-jhu/base-template/actions/workflows/security.yml/badge.svg)](https://github.com/ssec-jhu/base-template/actions/workflows/security.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14052740.svg)](https://doi.org/10.5281/zenodo.14052740)
@@ -20,6 +19,8 @@ Things to do when using this template:
  * Import package into https://readthedocs.org/.
  * Update [zenodo.json](zenodo.json). For more details see [zenodo.json docs](https://developers.zenodo.org/#representation) and [zenodo docs on contributors vs creators](https://help.zenodo.org/docs/deposit/describe-records/contributors/).
  * Update quickstart guide below.
+ * Go to https://github.com/ssec-jhu/<repo-name>/settings/pages and set the "source"
+   field for "Build and deployment" to "GitHub Actions".
 
 What's included in this template:
 
@@ -31,6 +32,7 @@ What's included in this template:
  * Dockerfile.
  * Pytest example(s).
  * Githooks.
+ * Docs that build and deploy to https://ssec-jhu.github.io/base-template
 
 # Quickstart Guide
 

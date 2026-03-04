@@ -85,9 +85,11 @@ jobs:
   docs:
     name: Build docs with Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    # need permission to create the ghpages branch in GitHub
+    # need permissions to deploy to GitHub Pages
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
     strategy:
       matrix:
         python-version: [ 3.11 ]
@@ -98,25 +100,21 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip3 install -r requirements/docs.txt
-        shell: bash
       - name: Build sphinx docs.
-        # Uncomment if you want all warning to be treated as errors. Note this will prevent the GitHub page update
-        #env:
-        #  SPHINXOPTS: '-W'
+        # Comment the env: SPHINXOPTS if you want to ignore warnings during doc build
+        env:
+         SPHINXOPTS: '-W'
         run: tox -e build-docs
         shell: bash
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        # build if push is on the main branch
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
-          force_orphan: true # Without this, the gh-pages branch may accumulate old commits and get messy.
+          path: ./docs/_build/html
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
   build:
     name: Build and Publish.

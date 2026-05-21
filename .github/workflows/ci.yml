@@ -40,6 +40,9 @@ jobs:
   test:
     name: pytests on Python ${{ matrix.python-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+      pull-requests: write
     strategy:
       matrix:
         python-version: [3.11]
@@ -51,6 +54,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
           lfs: true
+          fetch-depth: 0
     - uses: actions/setup-python@v4
       with:
           python-version: ${{ matrix.python-version }}
@@ -64,6 +68,9 @@ jobs:
       run: pip install .
     - name: Test with tox (pytest)
       run: tox -e test
+    - name: Extract coverage information
+      id: cov_outputs
+      run: python coverage_writer.py
     - name: Archive coverage report
       uses: actions/upload-artifact@v4.4.3
       with:
@@ -71,15 +78,38 @@ jobs:
         path: coverage.xml
         retention-days: 14
         if-no-files-found: error
-    - name: Evaluate Diff Coverage
+    - name: Evaluate Codebase Coverage
+      uses: 5monkeys/cobertura-action@v14
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        path: coverage.xml
+        minimum_coverage: 90
+        fail_below_threshold: true
+    - name: Evaluate Patch Coverage
+      if: github.event_name == 'pull_request'
       id: diff-coverage
       uses: Affanmir/diff-cover-action@v2.1.0
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         coverage-files: coverage.xml
         config-file: pyproject.toml
-        create-annotations: false
-
-
+        create-annotations: true
+    - name: Generate and Commit Coverage Badge
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: jaywcjlove/generated-badges@v1.1.0
+      with:
+        label: Coverage
+        output: coverage.svg
+        status: ${{ steps.cov_outputs.outputs.percent }}
+        color: ${{ steps.cov_outputs.outputs.color }}
+    - name: Commit coverage badge
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: stefanzweifel/git-auto-commit-action@v7.1.0
+      with:
+        commit_message: "[skip ci] Update coverage badge"
+        file_pattern: coverage.svg
+        branch: badges
+        commit_options: '--no-verify --signoff'
 
   docs:
     name: Build docs with Python ${{ matrix.python-version }}

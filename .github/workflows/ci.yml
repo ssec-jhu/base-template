@@ -89,6 +89,7 @@ jobs:
         path: coverage.xml
         minimum_coverage: ${{ env.CODEBASE_MIN_THRESHOLD }}
         fail_below_threshold: true
+        only_changed_files: true
     - name: Evaluate Patch Coverage
       if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
       id: diff-coverage

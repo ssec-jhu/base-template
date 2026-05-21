@@ -51,6 +51,8 @@ jobs:
     env:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}
+      CODEBASE_MIN_THRESHOLD: 90
+      PATCH_MIN_THRESHOLD: 80
     steps:
     - uses: actions/checkout@v4
       with:
@@ -80,23 +82,25 @@ jobs:
         retention-days: 14
         if-no-files-found: error
     - name: Evaluate Codebase Coverage
+      if: matrix.os == 'ubuntu-latest'
       uses: 5monkeys/cobertura-action@v14
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         path: coverage.xml
-        minimum_coverage: 90
+        minimum_coverage: ${{ env.CODEBASE_MIN_THRESHOLD }}
         fail_below_threshold: true
     - name: Evaluate Patch Coverage
-      if: github.event_name == 'pull_request'
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
       id: diff-coverage
       uses: Affanmir/diff-cover-action@v2.1.0
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         coverage-files: coverage.xml
-        config-file: pyproject.toml
         create-annotations: true
+        compare-branch: "origin/main"
+        fail-under: ${{ env.PATCH_MIN_THRESHOLD }}
     - name: Generate coverage Badge
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: jaywcjlove/generated-badges@v1.1.0
       with:
         label: Coverage
@@ -104,7 +108,7 @@ jobs:
         status: ${{ steps.cov_outputs.outputs.percent }}
         color: ${{ steps.cov_outputs.outputs.color }}
     - name: Commit coverage badge
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: stefanzweifel/git-auto-commit-action@v7.1.0
       with:
         commit_message: "[skip ci] Update coverage badge"

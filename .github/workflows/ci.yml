@@ -71,16 +71,15 @@ jobs:
         path: coverage.xml
         retention-days: 14
         if-no-files-found: error
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+    - name: Evaluate Diff Coverage
+      id: diff-coverage
+      uses: Affanmir/diff-cover-action@v2.1.0
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        env_vars: OS,PYTHON
-        fail_ci_if_error: true
-        files: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        verbose: true
+        coverage-files: coverage.xml
+        config-file: pyproject.toml
+        create-annotations: false
+
+
 
   docs:
     name: Build docs with Python ${{ matrix.python-version }}

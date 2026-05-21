@@ -1,3 +1,5 @@
+"""This script is used during the CI process to extract coverage information and generate a badge."""
+
 import json
 import os
 

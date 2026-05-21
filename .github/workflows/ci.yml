@@ -43,6 +43,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      checks: write
     strategy:
       matrix:
         python-version: [3.11]

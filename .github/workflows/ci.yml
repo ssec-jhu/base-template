@@ -68,7 +68,7 @@ jobs:
       run: pip install .
     - name: Test with tox (pytest)
       run: tox -e test
-    - name: Extract coverage information
+    - name: Extract coverage information for badges
       id: cov_outputs
       run: python coverage_writer.py
     - name: Archive coverage report
@@ -94,7 +94,7 @@ jobs:
         coverage-files: coverage.xml
         config-file: pyproject.toml
         create-annotations: true
-    - name: Generate and Commit Coverage Badge
+    - name: Generate coverage Badge
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: jaywcjlove/generated-badges@v1.1.0
       with:

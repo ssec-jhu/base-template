@@ -3,7 +3,7 @@ import os
 
 if __name__ == "__main__":
     # Read the coverage data from a file
-    with open('coverage.json', 'r') as f:
+    with open("coverage.json", "r") as f:
         coverage_data = json.load(f)
 
     total = int(coverage_data["totals"]["percent_covered_display"])

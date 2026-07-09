@@ -21,7 +21,7 @@ dev = [
     "pytest-cov",
     "ruff",
     "setuptools>=82.0.1",
-    "setuptools_scm[toml]>=8.0",
+    "setuptools_scm[toml]>=10.2.0",
     "tox"
 ]
 docs = [
@@ -38,7 +38,7 @@ documentation = "https://github.com/ssec-jhu/base-template"
 repository = "https://github.com/ssec-jhu/base-template"
 
 [build-system]
-requires = ["setuptools>=82.0.1", "setuptools_scm[toml]>=8.0"]
+requires = ["setuptools>=82.0.1", "setuptools_scm[toml]>=10.2.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]

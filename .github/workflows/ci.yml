@@ -40,6 +40,10 @@ jobs:
   test:
     name: pytests on Python ${{ matrix.python-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     strategy:
       matrix:
         python-version: [3.11]
@@ -47,10 +51,13 @@ jobs:
     env:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}
+      CODEBASE_MIN_THRESHOLD: 90
+      PATCH_MIN_THRESHOLD: 80
     steps:
     - uses: actions/checkout@v4
       with:
           lfs: true
+          fetch-depth: 0
     - uses: actions/setup-python@v4
       with:
           python-version: ${{ matrix.python-version }}
@@ -64,6 +71,9 @@ jobs:
       run: pip install .
     - name: Test with tox (pytest)
       run: tox -e test
+    - name: Extract coverage information for badges
+      id: cov_outputs
+      run: python coverage_writer.py
     - name: Archive coverage report
       uses: actions/upload-artifact@v4.4.3
       with:
@@ -71,16 +81,41 @@ jobs:
         path: coverage.xml
         retention-days: 14
         if-no-files-found: error
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+    - name: Evaluate Codebase Coverage
+      if: matrix.os == 'ubuntu-latest'
+      uses: 5monkeys/cobertura-action@v14
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        env_vars: OS,PYTHON
-        fail_ci_if_error: true
-        files: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        verbose: true
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        path: coverage.xml
+        minimum_coverage: ${{ env.CODEBASE_MIN_THRESHOLD }}
+        fail_below_threshold: true
+        only_changed_files: true
+    - name: Evaluate Patch Coverage
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
+      id: diff-coverage
+      uses: Affanmir/diff-cover-action@v2.1.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        coverage-files: coverage.xml
+        create-annotations: true
+        compare-branch: "origin/main"
+        fail-under: ${{ env.PATCH_MIN_THRESHOLD }}
+    - name: Generate coverage Badge
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: jaywcjlove/generated-badges@v1.1.0
+      with:
+        label: Coverage
+        output: coverage.svg
+        status: ${{ steps.cov_outputs.outputs.percent }}
+        color: ${{ steps.cov_outputs.outputs.color }}
+    - name: Commit coverage badge
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: stefanzweifel/git-auto-commit-action@v7.1.0
+      with:
+        commit_message: "[skip ci] Update coverage badge"
+        file_pattern: coverage.svg
+        branch: badges
+        commit_options: '--no-verify --signoff'
 
   docs:
     name: Build docs with Python ${{ matrix.python-version }}

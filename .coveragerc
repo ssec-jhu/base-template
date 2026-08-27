@@ -4,6 +4,7 @@ omit =
     setup.py
     */tests/*
     _version.py
+    coverage_writer.py
 [report]
 exclude_lines =
     @abstractmethod
